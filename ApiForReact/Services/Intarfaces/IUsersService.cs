@@ -5,7 +5,7 @@ namespace ApiForReact.Services.Intarfaces
 {
     public interface IUsersService
     {
-        public IEnumerable<User> GetUsers(int? page = 1, int? count = 10);
+        public IEnumerable<User> GetUsers(int page, int count);
         public int GetTotalCount();
     }
 }

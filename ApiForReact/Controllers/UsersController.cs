@@ -1,6 +1,7 @@
 ﻿using ApiForReact.Models;
 using ApiForReact.Services.Intarfaces;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace ApiForReact.Controllers
 {
@@ -9,13 +10,15 @@ namespace ApiForReact.Controllers
     public class UsersController : ControllerBase
     {
         IUsersService _usersService;
-        public UsersController(IUsersService usersService)
+        IUsersProfileService _usersProfileService;
+        public UsersController(IUsersService usersService, IUsersProfileService usersProfileService)
         {
-            this._usersService = usersService;
+            _usersService = usersService;
+            _usersProfileService = usersProfileService;
         }
 
         [HttpGet]
-        public IActionResult GetUsers(int page, int count)
+        public IActionResult GetUsers(int page = 1, int count = 10)
         {
             BaseResult<UsersResult> result = new BaseResult<UsersResult>
             {
@@ -24,6 +27,17 @@ namespace ApiForReact.Controllers
                     Items = _usersService.GetUsers(page, count),
                     TotalCount = _usersService.GetTotalCount()
                 },
+                Message = "Success",
+                ResultCode = 200
+            };
+            return Ok(result);
+        }
+        [HttpGet("profile/{userId}")]
+        public IActionResult GetUserProfile(Guid userId)
+        {
+            BaseResult<UserProfile> result = new BaseResult<UserProfile>
+            {
+                Result = _usersProfileService.GetUserProfile(userId),
                 Message = "Success",
                 ResultCode = 200
             };

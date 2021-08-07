@@ -26,10 +26,11 @@ namespace ApiForReact
 
             services.AddControllers();
 
-            services.AddSingleton<INameGeneratorService, NameGeneratorService>();
+            services.AddSingleton<ITextGeneratorService, TextGeneratorService>();
             services.AddSingleton<IPageGeneratorService, PageGeneratorService>();
 
             services.AddScoped<IUsersService, UsersService>();
+            services.AddScoped<IUsersProfileService, UsersProfileService>();
 
             services.AddSwaggerGen();
         }
