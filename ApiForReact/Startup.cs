@@ -1,9 +1,11 @@
 using ApiForReact.Services.Implementations;
 using ApiForReact.Services.Intarfaces;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Threading.Tasks;
 
 namespace ApiForReact
 {
@@ -25,12 +27,29 @@ namespace ApiForReact
             });
 
             services.AddControllers();
+            services.AddAuthentication(option =>
+            {
+                option.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            }).AddCookie(options =>
+            {
+                options.Cookie.Name = "react-web-cookie";
+                options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.None;
+                options.Events = new CookieAuthenticationEvents
+                {
+                    OnRedirectToLogin = redirectContext =>
+                    {
+                        redirectContext.HttpContext.Response.StatusCode = 401;
+                        return Task.CompletedTask;
+                    }
+                };
+            });
 
             services.AddSingleton<ITextGeneratorService, TextGeneratorService>();
             services.AddSingleton<IPageGeneratorService, PageGeneratorService>();
 
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<IUsersProfileService, UsersProfileService>();
+            services.AddScoped<IAuthService, AuthService>();
 
             services.AddSwaggerGen();
         }
@@ -48,6 +67,9 @@ namespace ApiForReact
             });
 
             app.UseRouting();
+
+            app.UseAuthentication();
+
             app.UseCors(MyAllowSpecificOrigins);
 
             app.UseEndpoints(endpoints =>
