@@ -2,7 +2,6 @@
 using ApiForReact.Models.Results;
 using ApiForReact.Services.Intarfaces;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Security.Claims;
@@ -40,7 +39,7 @@ namespace ApiForReact.Controllers
             }
             BaseResult<LoginResult> result = new BaseResult<LoginResult>
             {
-                Message = "Your login data is incorrect",
+                Message = "You are not authorized!",
                 Result = null,
                 ResultCode = 1
             };

@@ -22,7 +22,8 @@ namespace ApiForReact
                                   {
                                       builder.WithOrigins("http://localhost:3000")
                                             .AllowAnyHeader()
-                                            .AllowAnyMethod();
+                                            .AllowAnyMethod()
+                                            .AllowCredentials();
                                   });
             });
 
@@ -33,6 +34,7 @@ namespace ApiForReact
             }).AddCookie(options =>
             {
                 options.Cookie.Name = "react-web-cookie";
+                options.ExpireTimeSpan = System.TimeSpan.FromDays(10);
                 options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.None;
                 options.Events = new CookieAuthenticationEvents
                 {
