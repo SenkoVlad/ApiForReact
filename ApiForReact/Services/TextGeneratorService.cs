@@ -1,8 +1,7 @@
-﻿using ApiForReact.Services.Intarfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
-namespace ApiForReact.Services.Implementations
+namespace ApiForReact.Services
 {
     public class TextGeneratorService : ITextGeneratorService
     {

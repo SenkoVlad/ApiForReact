@@ -1,4 +1,4 @@
-﻿namespace ApiForReact.Services.Intarfaces
+﻿namespace ApiForReact.Services
 {
     public interface ITextGeneratorService
     {

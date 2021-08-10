@@ -1,13 +1,14 @@
 ﻿using ApiForReact.Models;
-using ApiForReact.Services.Intarfaces;
+using ApiForReact.Repositories.Intarfaces;
+using ApiForReact.Services;
 using System;
 
-namespace ApiForReact.Services.Implementations
+namespace ApiForReact.Repositories.Implementations
 {
-    public class UsersProfileService : IUsersProfileService
+    public class UsersProfileRepository : IUsersProfileRepository
     {
         private ITextGeneratorService _textGeneratorService;
-        public UsersProfileService(ITextGeneratorService nameGeneratorService) =>
+        public UsersProfileRepository(ITextGeneratorService nameGeneratorService) =>
             _textGeneratorService = nameGeneratorService;
 
         public UserProfile GetUserProfile(Guid userId)
