@@ -1,9 +1,9 @@
 ﻿using ApiForReact.Models;
 using System;
 
-namespace ApiForReact.Services.Intarfaces
+namespace ApiForReact.Repositories.Intarfaces
 {
-    public interface IUsersProfileService
+    public interface IUsersProfileRepository
     {
         public UserProfile GetUserProfile(Guid userId);
     }

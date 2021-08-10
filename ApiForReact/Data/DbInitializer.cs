@@ -1,5 +1,5 @@
 ﻿using ApiForReact.Data.Dto;
-using ApiForReact.Services.Intarfaces;
+using ApiForReact.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

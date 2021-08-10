@@ -1,6 +1,6 @@
 ﻿using ApiForReact.Models;
 using ApiForReact.Models.Results;
-using ApiForReact.Services.Intarfaces;
+using ApiForReact.Repositories.Intarfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -13,8 +13,8 @@ namespace ApiForReact.Controllers
     [Route("[controller]")]
     public class AuthController : ControllerBase
     {
-        private IAuthService _authService;
-        public AuthController(IAuthService authService) =>
+        private IAuthRepository _authService;
+        public AuthController(IAuthRepository authService) =>
             _authService = authService;
 
         [HttpGet("status")]

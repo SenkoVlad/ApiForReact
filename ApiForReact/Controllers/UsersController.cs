@@ -1,7 +1,9 @@
 ﻿using ApiForReact.Models;
-using ApiForReact.Services.Intarfaces;
+using ApiForReact.Repositories.Intarfaces;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace ApiForReact.Controllers
 {
@@ -9,24 +11,25 @@ namespace ApiForReact.Controllers
     [Route("[controller]")]
     public class UsersController : ControllerBase
     {
-        IUsersService _usersService;
-        IUsersProfileService _usersProfileService;
-        public UsersController(IUsersService usersService, IUsersProfileService usersProfileService)
+        IUsersRepository _usersService;
+        IUsersProfileRepository _usersProfileService;
+        public UsersController(IUsersRepository usersService, IUsersProfileRepository usersProfileService)
         {
             _usersService = usersService;
             _usersProfileService = usersProfileService;
         }
 
         [HttpGet]
-        public IActionResult GetUsers(int page = 1, int count = 10)
+        public async Task<IActionResult> GetUsers(int page = 1, int count = 10)
         {
+            var userId = Guid.Empty;
+
+            if (HttpContext.User.Identity.IsAuthenticated)
+                userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
             BaseResult<UsersResult> result = new BaseResult<UsersResult>
             {
-                Result = new UsersResult
-                {
-                    Items = _usersService.GetUsers(page, count),
-                    TotalCount = _usersService.GetTotalCount()
-                },
+                Result =  await _usersService.GetUsers(page, count, userId),
                 Message = "Success",
                 ResultCode = 200
             };
