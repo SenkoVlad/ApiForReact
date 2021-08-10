@@ -43,5 +43,11 @@ namespace ApiForReact.Controllers
             };
             return Ok(result);
         }
+
+        //[HttpPost("follow/{userId}")]
+        //public IActionResult FollowUser(Guid userId)
+        //{
+
+        //}
     }
 }

@@ -1,8 +1,10 @@
+using ApiForReact.Data;
 using ApiForReact.Services.Implementations;
 using ApiForReact.Services.Intarfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Threading.Tasks;
@@ -53,6 +55,11 @@ namespace ApiForReact
             services.AddScoped<IUsersProfileService, UsersProfileService>();
             services.AddScoped<IAuthService, AuthService>();
 
+            services.AddDbContext<AppDbContext>(options =>
+            {
+                options.UseSqlite("Data Source=Database.db");
+            });
+
             services.AddSwaggerGen();
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -61,6 +68,7 @@ namespace ApiForReact
             {
                 app.UseDeveloperExceptionPage();
             }
+            DbInitializerExtention.InitializeAsync(app);
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
