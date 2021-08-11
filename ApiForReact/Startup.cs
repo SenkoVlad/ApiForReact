@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
 namespace ApiForReact
@@ -57,7 +58,13 @@ namespace ApiForReact
 
             services.AddDbContext<AppDbContext>(options =>
             {
-                options.UseSqlite("Data Source=Database.db");
+                options.UseLoggerFactory(LoggerFactory.Create(
+                    builder =>
+                    {
+                        builder.AddConsole();
+                    }
+                ));
+                options.UseSqlite("Data Source=Database.db").EnableSensitiveDataLogging();
             });
 
             services.AddSwaggerGen();

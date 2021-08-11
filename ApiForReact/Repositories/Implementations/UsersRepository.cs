@@ -26,7 +26,7 @@ namespace ApiForReact.Repositories.Implementations
                             Name = user1.Name,
                             PhotoUrl = user1.PhotoUrl,
                             Status = user1.Status,
-                            Followed =  u.SubscriptionUser != null && u.SubscriberUser.Id == userId ? 1 : 0,
+                            Followed =  u.SubscriberUser != null && u.SubscriberUser.Id == userId ? 1 : 0,
                             Location = new Location
                             {
                                 City = user1.Location.City,

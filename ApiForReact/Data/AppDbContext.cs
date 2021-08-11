@@ -1,5 +1,6 @@
 ﻿using ApiForReact.Data.Dto;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace ApiForReact.Data
 {
@@ -13,9 +14,5 @@ namespace ApiForReact.Data
         public DbSet<UserUser> UsersUsers { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> dbContextOptions) : base(dbContextOptions) { }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-        }
     }
 }
