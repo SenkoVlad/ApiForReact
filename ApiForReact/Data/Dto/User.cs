@@ -11,8 +11,5 @@ namespace ApiForReact.Data.Dto
         public int Status { get; set; }
         public Location Location { get; set; }
         public ICollection<Post> Posts { get; set; }
-
-        public ICollection<User> SubscriberUser { get; set; }
-        public ICollection<User> SubscriptionUser { get; set; }
     }
 }

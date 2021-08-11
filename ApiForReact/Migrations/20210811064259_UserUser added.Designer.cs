@@ -3,14 +3,16 @@ using System;
 using ApiForReact.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ApiForReact.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210811064259_UserUser added")]
+    partial class UserUseradded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -130,25 +132,19 @@ namespace ApiForReact.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("ApiForReact.Data.Dto.UserUser", b =>
+            modelBuilder.Entity("UserUser", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<Guid>("SubscriberUserId")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("SubscriberUserId")
+                    b.Property<Guid>("SubscriptionUserId")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("SubscriptionUserId")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SubscriberUserId");
+                    b.HasKey("SubscriberUserId", "SubscriptionUserId");
 
                     b.HasIndex("SubscriptionUserId");
 
-                    b.ToTable("UsersUsers");
+                    b.ToTable("UserUser");
                 });
 
             modelBuilder.Entity("ApiForReact.Data.Dto.Dialog", b =>
@@ -203,19 +199,19 @@ namespace ApiForReact.Migrations
                     b.Navigation("Location");
                 });
 
-            modelBuilder.Entity("ApiForReact.Data.Dto.UserUser", b =>
+            modelBuilder.Entity("UserUser", b =>
                 {
-                    b.HasOne("ApiForReact.Data.Dto.User", "SubscriberUser")
+                    b.HasOne("ApiForReact.Data.Dto.User", null)
                         .WithMany()
-                        .HasForeignKey("SubscriberUserId");
+                        .HasForeignKey("SubscriberUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("ApiForReact.Data.Dto.User", "SubscriptionUser")
+                    b.HasOne("ApiForReact.Data.Dto.User", null)
                         .WithMany()
-                        .HasForeignKey("SubscriptionUserId");
-
-                    b.Navigation("SubscriberUser");
-
-                    b.Navigation("SubscriptionUser");
+                        .HasForeignKey("SubscriptionUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ApiForReact.Data.Dto.Dialog", b =>

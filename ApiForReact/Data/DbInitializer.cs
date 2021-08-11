@@ -36,6 +36,16 @@ namespace ApiForReact.Data
 
                 foreach (var user in users)
                     context.Users.Add(user);
+
+                for (int i = 0; i < 200; i++)
+                {
+                    context.UsersUsers.Add(new UserUser 
+                    {
+                        Id = Guid.NewGuid(),
+                        SubscriberUser = users[i],
+                        SubscriptionUser = users[199 - i]
+                    });
+                }
                 context.SaveChanges();
             }
         }
@@ -60,15 +70,8 @@ namespace ApiForReact.Data
                     PhotoUrl = "",
                     Status = random.Next(0, 2),
                     Location = location,
-                    SubscriberUser = new List<User>(),
-                    SubscriptionUser = new List<User>()
                 };
                 Users.Add(user);
-            }
-
-            for (int i = 0; i < count; i++)
-            {
-                Users[i].SubscriptionUser.Add(Users[199 - i]);
             }
 
             return Users;
