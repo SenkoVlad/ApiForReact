@@ -1,5 +1,6 @@
 ﻿using ApiForReact.Models;
 using ApiForReact.Repositories.Intarfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Security.Claims;
@@ -11,12 +12,12 @@ namespace ApiForReact.Controllers
     [Route("[controller]")]
     public class UsersController : ControllerBase
     {
-        IUsersRepository _usersService;
-        IUsersProfileRepository _usersProfileService;
-        public UsersController(IUsersRepository usersService, IUsersProfileRepository usersProfileService)
+        IUsersRepository _usersRepository;
+        IUsersProfileRepository _usersProfileRepository;
+        public UsersController(IUsersRepository usersRepository, IUsersProfileRepository usersProfileRepository)
         {
-            _usersService = usersService;
-            _usersProfileService = usersProfileService;
+            _usersRepository = usersRepository;
+            _usersProfileRepository = usersProfileRepository;
         }
 
         [HttpGet]
@@ -29,9 +30,9 @@ namespace ApiForReact.Controllers
 
             BaseResult<UsersResult> result = new BaseResult<UsersResult>
             {
-                Result =  await _usersService.GetUsers(page, count, userId),
+                Result =  await _usersRepository.GetUsers(page, count, userId),
                 Message = "Success",
-                ResultCode = 200
+                ResultCode = 0
             };
             return Ok(result);
         }
@@ -40,17 +41,32 @@ namespace ApiForReact.Controllers
         {
             BaseResult<UserProfile> result = new BaseResult<UserProfile>
             {
-                Result = _usersProfileService.GetUserProfile(userId),
+                Result = _usersProfileRepository.GetUserProfile(userId),
                 Message = "Success",
                 ResultCode = 200
             };
             return Ok(result);
         }
 
-        //[HttpPost("follow/{userId}")]
-        //public IActionResult FollowUser(Guid userId)
-        //{
+        [Authorize]
+        [HttpPost("follow/{userId}")]
+        public async Task<IActionResult> FollowUser(Guid userId)
+        {
+            var sourceUserId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var result = await _usersRepository.FollowUser(sourceUserId, destUserId: userId);
 
-        //}
+            return Ok(result);
+        }
+
+
+        [Authorize]
+        [HttpPost("unfollow/{userId}")]
+        public async Task<IActionResult> UnFollowUser(Guid userId)
+        {
+            var sourceUserId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var result = await _usersRepository.UnFollowUser(sourceUserId, destUserId: userId);
+
+            return Ok(result);
+        }
     }
 }

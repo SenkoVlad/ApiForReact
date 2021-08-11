@@ -42,8 +42,8 @@ namespace ApiForReact.Data
                     context.UsersUsers.Add(new UserUser 
                     {
                         Id = Guid.NewGuid(),
-                        SubscriberUser = users[i],
-                        SubscriptionUser = users[199 - i]
+                        SubscriberUserId = users[i].Id,
+                        SubscriptionUserId = users[199 - i].Id
                     });
                 }
                 context.SaveChanges();

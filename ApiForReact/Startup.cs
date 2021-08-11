@@ -49,6 +49,7 @@ namespace ApiForReact
                     }
                 };
             });
+            services.AddAuthorization();
 
             services.AddSingleton<ITextGeneratorService, TextGeneratorService>();
 
@@ -86,6 +87,7 @@ namespace ApiForReact
             app.UseRouting();
 
             app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseCors(MyAllowSpecificOrigins);
 

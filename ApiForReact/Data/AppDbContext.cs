@@ -14,5 +14,11 @@ namespace ApiForReact.Data
         public DbSet<UserUser> UsersUsers { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> dbContextOptions) : base(dbContextOptions) { }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<UserUser>().HasIndex(u => new { u.SubscriberUserId, u.SubscriptionUserId })
+                                           .IsUnique(true);
+        }
     }
 }
