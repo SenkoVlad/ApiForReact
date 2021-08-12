@@ -5,6 +5,7 @@ using ApiForReact.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -92,8 +93,12 @@ namespace ApiForReact
             app.UseCors(MyAllowSpecificOrigins);
 
             app.UseEndpoints(endpoints =>
-            {
+            { 
                 endpoints.MapControllers();
+                endpoints.MapGet("/", async context =>
+                {
+                    await context.Response.WriteAsync("Start project");
+                }); 
             });
         }
     }
