@@ -37,15 +37,15 @@ namespace ApiForReact.Data
                 foreach (var user in users)
                     context.Users.Add(user);
 
-                for (int i = 0; i < 200; i++)
-                {
-                    context.UsersUsers.Add(new UserUser 
-                    {
-                        Id = Guid.NewGuid(),
-                        SubscriberUserId = users[i].Id,
-                        SubscriptionUserId = users[199 - i].Id
-                    });
-                }
+                //for (int i = 0; i < 200; i++)
+                //{
+                //    context.UsersUsers.Add(new UserUser 
+                //    {
+                //        Id = Guid.NewGuid(),
+                //        SubscriberUserId = users[i].Id,
+                //        SubscriptionUserId = users[199 - i].Id
+                //    });
+                //}
                 context.SaveChanges();
             }
         }

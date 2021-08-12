@@ -89,31 +89,35 @@ namespace ApiForReact.Repositories.Implementations
             {
                 Message = "Smth wrong",
                 Result = "Smth wrong",
-                ResultCode = -1
+                ResultCode = - 1
             };
         }
 
         public async Task<UsersResult> GetUsers(int page, int count, Guid userId)
         {
-            var user3 = (from user1 in _appDbContext.Users
-                        join user2 in _appDbContext.UsersUsers on user1.Id equals user2.SubscriptionUserId 
-                        into User2
-                        from u in User2.DefaultIfEmpty()
-                        select  new User
-                        {
-                            Id = user1.Id,
-                            Name = user1.Name,
-                            PhotoUrl = user1.PhotoUrl,
-                            Status = user1.Status,
-                            Followed = u.SubscriberUserId == userId ? 1 : 0,
-                            Location = new Location
-                            {
-                                City = user1.Location.City,
-                                Country = user1.Location.Country
-                            }
-                        }).Skip((page - 1) * count).Take(count);
+            var result = (from users1 in _appDbContext.Users
+                    join  usersusers1 in
+                    (
+                    from usersusers2 in _appDbContext.UsersUsers
+                    where usersusers2.SubscriberUserId == userId
+                    select new { usersusers2.SubscriberUserId, usersusers2.SubscriptionUserId }
+                    ) on users1.Id equals usersusers1.SubscriptionUserId into u_left
+                    from usersusers3 in u_left.DefaultIfEmpty()
+                    select new { users1, usersusers3 }).Skip((page - 1) * count).Take(count);
 
-            var users = await user3.ToListAsync();
+            var users = await result.Select(user => new User 
+            {
+                Followed = user.usersusers3.SubscriberUserId == userId ? 1 : 0,
+                Id = user.users1.Id,
+                Location = new Location 
+                {
+                    City = user.users1.Location.City,
+                    Country = user.users1.Location.Country
+                },
+                Name = user.users1.Name,
+                PhotoUrl = user.users1.PhotoUrl,
+                Status = user.users1.Status
+            }).ToListAsync();
 
             var totalCount = await _appDbContext.Users.CountAsync();
 
