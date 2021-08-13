@@ -338,3 +338,5 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+/ApiForReact/Database.db-shm
+/ApiForReact/Database.db-wal
