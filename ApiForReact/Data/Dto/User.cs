@@ -16,6 +16,6 @@ namespace ApiForReact.Data.Dto
         public UserContacts UserContacts { get; set; }
         public string Info { get; set; }
         public bool IsLookingForAJob { get; set; }
-        public string ResumeText { get; set; }
+        public string ResumeText { get; set; } // ком
     }
 }
