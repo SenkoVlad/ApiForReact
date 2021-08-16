@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ApiForReact.Models;
+using System;
 using System.Collections.Generic;
 
 namespace ApiForReact.Data.Dto
@@ -11,5 +12,10 @@ namespace ApiForReact.Data.Dto
         public int Status { get; set; }
         public Location Location { get; set; }
         public ICollection<Post> Posts { get; set; }
+
+        public UserContacts UserContacts { get; set; }
+        public string Info { get; set; }
+        public bool IsLookingForAJob { get; set; }
+        public string ResumeText { get; set; }
     }
 }

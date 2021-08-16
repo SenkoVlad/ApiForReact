@@ -65,7 +65,7 @@ namespace ApiForReact.Controllers
                 new Claim(ClaimTypes.Name, loginModel.Login),
                 new Claim(ClaimTypes.Email, "vlad@senko.com"),
                 new Claim(ClaimTypes.Role, "user"),
-                new Claim(ClaimTypes.NameIdentifier, "19645127-3EEA-4444-9F0F-124BFE75E775"),
+                new Claim(ClaimTypes.NameIdentifier, "32384AD8-6DEA-49C6-8880-D3BD02FB1A13"),
             }, "Cookies");
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
             await Request.HttpContext.SignInAsync("Cookies", claimsPrincipal);
@@ -77,7 +77,7 @@ namespace ApiForReact.Controllers
                 {
                     Email = "vlad@senko.com",
                     Login = loginModel.Login,
-                    UserId = Guid.Parse("19645127-3EEA-4444-9F0F-124BFE75E775")
+                    UserId = Guid.Parse("32384AD8-6DEA-49C6-8880-D3BD02FB1A13")
                 },
                 ResultCode = 0
             };

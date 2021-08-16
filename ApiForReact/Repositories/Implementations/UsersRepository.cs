@@ -93,6 +93,29 @@ namespace ApiForReact.Repositories.Implementations
             };
         }
 
+        public async Task<BaseResult<User>> GetUser(Guid userId)
+        {
+            var userDto = await _appDbContext.Users.Include(item => item.Location)
+                                                .Include(item => item.UserContacts)
+                                                .FirstOrDefaultAsync(user => user.Id == userId);
+            BaseResult<User> result = new BaseResult<User>();
+
+            if (userDto != null)
+            {
+                var user = User.Mapper.Map(userDto);
+                result.Result = user;
+                result.Message = "Success";
+                result.ResultCode = 200;
+            }
+            else
+            {
+                result.Result = null;
+                result.Message = "Success";
+                result.ResultCode = 200;
+            }
+            return result;
+        }
+        
         public async Task<UsersResult> GetUsers(int page, int count, Guid userId)
         {
             var result = (from users1 in _appDbContext.Users
@@ -103,20 +126,24 @@ namespace ApiForReact.Repositories.Implementations
                     select new { usersusers2.SubscriberUserId, usersusers2.SubscriptionUserId }
                     ) on users1.Id equals usersusers1.SubscriptionUserId into u_left
                     from usersusers3 in u_left.DefaultIfEmpty()
-                    select new { users1, usersusers3 }).Skip((page - 1) * count).Take(count);
+                    select new { users1.Id, users1.Location.City, 
+                                 users1.Location.Country, 
+                                 users1.Name, users1.PhotoUrl, 
+                                 users1.Status, 
+                                 usersusers3.SubscriberUserId }).Skip((page - 1) * count).Take(count);
 
             var users = await result.Select(user => new User 
             {
-                Followed = user.usersusers3.SubscriberUserId == userId ? 1 : 0,
-                Id = user.users1.Id,
+                Followed = user.SubscriberUserId == userId ? 1 : 0,
+                Id = user.Id,
                 Location = new Location 
                 {
-                    City = user.users1.Location.City,
-                    Country = user.users1.Location.Country
+                    City = user.City,
+                    Country = user.Country
                 },
-                Name = user.users1.Name,
-                PhotoUrl = user.users1.PhotoUrl,
-                Status = user.users1.Status
+                Name = user.Name,
+                PhotoUrl = user.PhotoUrl,
+                Status = user.Status
             }).ToListAsync();
 
             var totalCount = await _appDbContext.Users.CountAsync();

@@ -27,7 +27,7 @@ namespace ApiForReact.Data
             context.Database.EnsureCreated();
             
             if (context.Users.Any())
-                return;   // DB has been seeded
+                return;   
 
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
@@ -37,15 +37,6 @@ namespace ApiForReact.Data
                 foreach (var user in users)
                     context.Users.Add(user);
 
-                //for (int i = 0; i < 200; i++)
-                //{
-                //    context.UsersUsers.Add(new UserUser 
-                //    {
-                //        Id = Guid.NewGuid(),
-                //        SubscriberUserId = users[i].Id,
-                //        SubscriptionUserId = users[199 - i].Id
-                //    });
-                //}
                 context.SaveChanges();
             }
         }
@@ -70,6 +61,19 @@ namespace ApiForReact.Data
                     PhotoUrl = "",
                     Status = random.Next(0, 2),
                     Location = location,
+                    Info = textGeneratorService.GenerateText(random.Next(5, 10), 7),
+                    IsLookingForAJob = Convert.ToBoolean(random.Next(0, 2)),
+                    ResumeText = textGeneratorService.GenerateText(random.Next(5, 10), 10),
+                    UserContacts = new UserContacts 
+                    {
+                        Id = Guid.NewGuid(),
+                        Facebook = "https://facebook.com/" + textGeneratorService.GenerateText(random.Next(5, 10)),
+                        GitHub = "https://github.com/" + textGeneratorService.GenerateText(random.Next(5, 10)),
+                        Instagram = "https://instagram.com/" + textGeneratorService.GenerateText(random.Next(5, 10)),
+                        Twitter = "https://twitter.com/" + textGeneratorService.GenerateText(random.Next(5, 10)),
+                        Vk = "https://vk.com/" + textGeneratorService.GenerateText(random.Next(5, 10)),
+                        Youtube = "https://youtube.com/" + textGeneratorService.GenerateText(random.Next(5, 10))
+                    }
                 };
                 Users.Add(user);
             }
