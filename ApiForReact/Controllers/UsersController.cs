@@ -1,4 +1,5 @@
-﻿using ApiForReact.Models;
+﻿using ApiForReact.Controllers.RequestModels;
+using ApiForReact.Models;
 using ApiForReact.Repositories.Intarfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,7 +27,7 @@ namespace ApiForReact.Controllers
 
             BaseResult<UsersResult> result = new BaseResult<UsersResult>
             {
-                Result =  await _usersRepository.GetUsers(page, count, userId),
+                Result = await _usersRepository.GetUsers(page, count, userId),
                 Message = "Success",
                 ResultCode = 0
             };
@@ -36,6 +37,16 @@ namespace ApiForReact.Controllers
         public async Task<IActionResult> GetUser(Guid userId)
         {
             var result = await _usersRepository.GetUser(userId);
+            return Ok(result);
+        }
+
+        [Authorize]
+        [HttpPut("updatestatus")]
+        public async Task<IActionResult> UpdateUserStatus([FromBody] UpdateStatusRequestModel status)
+        {
+            var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var result = await _usersRepository.UpdateUserStatus(status.status, userId);
+
             return Ok(result);
         }
 

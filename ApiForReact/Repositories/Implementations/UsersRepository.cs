@@ -26,12 +26,12 @@ namespace ApiForReact.Repositories.Implementations
                     Result = "Error",
                     ResultCode = -1
                 };
-            
+
             var result = _appDbContext.UsersUsers.Add(new Data.Dto.UserUser
             {
                 Id = Guid.NewGuid(),
                 SubscriberUserId = srcUserId,
-                SubscriptionUserId = destUserId 
+                SubscriptionUserId = destUserId
             });
             var saveResult = await _appDbContext.SaveChangesAsync();
 
@@ -66,7 +66,7 @@ namespace ApiForReact.Repositories.Implementations
 
             var usersUsersRow = await _appDbContext.UsersUsers.FirstOrDefaultAsync(item => item.SubscriberUserId == srcUserId && item.SubscriptionUserId == destUserId);
 
-            if(usersUsersRow == null)
+            if (usersUsersRow == null)
                 return new BaseResult<string>
                 {
                     Message = "Smth wrong",
@@ -89,27 +89,27 @@ namespace ApiForReact.Repositories.Implementations
             {
                 Message = "Smth wrong",
                 Result = "Smth wrong",
-                ResultCode = - 1
+                ResultCode = -1
             };
         }
 
         public async Task<UsersResult> GetUsers(int page, int count, Guid userId)
         {
             var result = (from users1 in _appDbContext.Users
-                    join  usersusers1 in
-                    (
-                    from usersusers2 in _appDbContext.UsersUsers
-                    where usersusers2.SubscriberUserId == userId
-                    select new { usersusers2.SubscriberUserId, usersusers2.SubscriptionUserId }
-                    ) on users1.Id equals usersusers1.SubscriptionUserId into u_left
-                    from usersusers3 in u_left.DefaultIfEmpty()
-                    select new { users1, usersusers3 }).Skip((page - 1) * count).Take(count);
+                          join usersusers1 in
+                          (
+                          from usersusers2 in _appDbContext.UsersUsers
+                          where usersusers2.SubscriberUserId == userId
+                          select new { usersusers2.SubscriberUserId, usersusers2.SubscriptionUserId }
+                          ) on users1.Id equals usersusers1.SubscriptionUserId into u_left
+                          from usersusers3 in u_left.DefaultIfEmpty()
+                          select new { users1, usersusers3 }).Skip((page - 1) * count).Take(count);
 
-            var users = await result.Select(user => new User 
+            var users = await result.Select(user => new User
             {
                 Followed = user.usersusers3.SubscriberUserId == userId ? 1 : 0,
                 Id = user.users1.Id,
-                Location = new Location 
+                Location = new Location
                 {
                     City = user.users1.Location.City,
                     Country = user.users1.Location.Country
@@ -134,7 +134,7 @@ namespace ApiForReact.Repositories.Implementations
                                                    .Include(user => user.Location)
                                                    .FirstOrDefaultAsync(user => user.Id == id);
             BaseResult<User> user = new BaseResult<User>();
-            if(userDto != null)
+            if (userDto != null)
             {
                 user.Message = "Success";
                 user.Result = User.Mapper.Map(userDto);
@@ -148,6 +148,28 @@ namespace ApiForReact.Repositories.Implementations
             }
             return user;
         }
+
+        public async Task<BaseResult<string>> UpdateUserStatus(string status, Guid userId)
+        {
+            var userDto = await _appDbContext.Users.FirstOrDefaultAsync(user => user.Id == userId);
+            BaseResult<string> result = new BaseResult<string>();
+            if (userDto != null)
+            {
+                userDto.Status = status;
+                await _appDbContext.SaveChangesAsync();
+
+                result.Message = "Success";
+                result.Result = "";
+                result.ResultCode = 0;
+
+                return result;
+            }
+
+            result.Message = "user isn't exist";
+            result.Result = "";
+            result.ResultCode = -1;
+
+            return result;
+        }
     }
 }
- 

@@ -10,5 +10,6 @@ namespace ApiForReact.Repositories.Intarfaces
         public Task<BaseResult<string>> FollowUser(Guid srcUserId, Guid destUserId);
         public Task<BaseResult<string>> UnFollowUser(Guid srcUserId, Guid destUserId);
         public Task<BaseResult<User>> GetUser(Guid id);
+        public Task<BaseResult<string>> UpdateUserStatus(string status, Guid userId);
     }
 }
