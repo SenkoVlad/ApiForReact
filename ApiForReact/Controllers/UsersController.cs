@@ -13,12 +13,8 @@ namespace ApiForReact.Controllers
     public class UsersController : ControllerBase
     {
         IUsersRepository _usersRepository;
-        IUsersProfileRepository _usersProfileRepository;
-        public UsersController(IUsersRepository usersRepository, IUsersProfileRepository usersProfileRepository)
-        {
+        public UsersController(IUsersRepository usersRepository) =>
             _usersRepository = usersRepository;
-            _usersProfileRepository = usersProfileRepository;
-        }
 
         [HttpGet]
         public async Task<IActionResult> GetUsers(int page = 1, int count = 10)
@@ -36,15 +32,10 @@ namespace ApiForReact.Controllers
             };
             return Ok(result);
         }
-        [HttpGet("profile/{userId}")]
-        public IActionResult GetUserProfile(Guid userId)
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetUser(Guid userId)
         {
-            BaseResult<UserProfile> result = new BaseResult<UserProfile>
-            {
-                Result = _usersProfileRepository.GetUserProfile(userId),
-                Message = "Success",
-                ResultCode = 200
-            };
+            var result = await _usersRepository.GetUser(userId);
             return Ok(result);
         }
 

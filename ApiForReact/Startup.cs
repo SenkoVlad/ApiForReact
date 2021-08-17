@@ -55,7 +55,6 @@ namespace ApiForReact
             services.AddSingleton<ITextGeneratorService, TextGeneratorService>();
 
             services.AddScoped<IUsersRepository, UsersRepository>();
-            services.AddScoped<IUsersProfileRepository, UsersProfileRepository>();
             services.AddScoped<IAuthRepository, AuthRepository>();
 
             services.AddDbContext<AppDbContext>(options =>

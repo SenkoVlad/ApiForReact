@@ -36,16 +36,6 @@ namespace ApiForReact.Data
 
                 foreach (var user in users)
                     context.Users.Add(user);
-
-                //for (int i = 0; i < 200; i++)
-                //{
-                //    context.UsersUsers.Add(new UserUser 
-                //    {
-                //        Id = Guid.NewGuid(),
-                //        SubscriberUserId = users[i].Id,
-                //        SubscriptionUserId = users[199 - i].Id
-                //    });
-                //}
                 context.SaveChanges();
             }
         }
@@ -68,8 +58,21 @@ namespace ApiForReact.Data
                     Id = Guid.NewGuid(),
                     Name = textGeneratorService.GenerateText(random.Next(5, 10), 2),
                     PhotoUrl = "",
-                    Status = random.Next(0, 2),
+                    Status = textGeneratorService.GenerateText(random.Next(5, 10), 3),
                     Location = location,
+                    Contacts = new UserContacts
+                    {
+                        Id = Guid.NewGuid(),
+                        Facebook = "https://facebook.com/" + textGeneratorService.GenerateText(random.Next(5, 10)),
+                        GitHub = "https://github.com/" + textGeneratorService.GenerateText(random.Next(5, 10)),
+                        Instagram = "https://instagram.com/" + textGeneratorService.GenerateText(random.Next(5, 10)),
+                        Twitter = "https://twitter.com/" + textGeneratorService.GenerateText(random.Next(5, 10)),
+                        Vk = "https://vk.com/" + textGeneratorService.GenerateText(random.Next(5, 10)),
+                        Youtube = "https://youtube.com/" + textGeneratorService.GenerateText(random.Next(5, 10))
+                    },
+                    Info = textGeneratorService.GenerateText(random.Next(5, 10), 7),
+                    IsLookingForAJob = Convert.ToBoolean(random.Next(0, 2)),
+                    ResumeText = textGeneratorService.GenerateText(random.Next(5, 10), 10)
                 };
                 Users.Add(user);
             }
