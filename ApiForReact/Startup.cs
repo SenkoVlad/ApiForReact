@@ -36,6 +36,7 @@ namespace ApiForReact
             services.AddAuthentication(option =>
             {
                 option.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                option.DefaultSignOutScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             }).AddCookie(options =>
             {
                 options.Cookie.Name = "react-web-cookie";
