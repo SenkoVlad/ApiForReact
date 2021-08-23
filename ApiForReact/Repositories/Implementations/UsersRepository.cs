@@ -155,27 +155,6 @@ namespace ApiForReact.Repositories.Implementations
             };
         }
 
-        public async Task<BaseResult<User>> GetUser(Guid id)
-        {
-            var userDto = await _appDbContext.Users.Include(user => user.Contacts)
-                                                   .Include(user => user.Location)
-                                                   .FirstOrDefaultAsync(user => user.Id == id);
-            BaseResult<User> user = new BaseResult<User>();
-            if (userDto != null)
-            {
-                user.Message = "Success";
-                user.Result = User.Mapper.Map(userDto);
-                user.ResultCode = 0;
-            }
-            else
-            {
-                user.Message = "User isn't found";
-                user.Result = null;
-                user.ResultCode = -1;
-            }
-            return user;
-        }
-
         public async Task<BaseResult<string>> UpdateUserStatus(string status, Guid userId)
         {
             var userDto = await _appDbContext.Users.FirstOrDefaultAsync(user => user.Id == userId);
