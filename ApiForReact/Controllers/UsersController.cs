@@ -1,5 +1,4 @@
-﻿using ApiForReact.Controllers.RequestModels;
-using ApiForReact.Models;
+﻿using ApiForReact.Models;
 using ApiForReact.Repositories.Intarfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
