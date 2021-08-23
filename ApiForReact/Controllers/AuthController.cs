@@ -90,7 +90,7 @@ namespace ApiForReact.Controllers
         }
 
         [Authorize]
-        [HttpGet("logout")] 
+        [HttpDelete("logout")] 
         public async Task<IActionResult> Logout()
         {
             var claimsIdentity = User.Identity as ClaimsIdentity;

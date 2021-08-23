@@ -105,13 +105,13 @@ namespace ApiForReact.Repositories.Implementations
                 var user = User.Mapper.Map(userDto);
                 result.Result = user;
                 result.Message = "Success";
-                result.ResultCode = 200;
+                result.ResultCode = 0;
             }
             else
             {
                 result.Result = null;
                 result.Message = "Success";
-                result.ResultCode = 200;
+                result.ResultCode = -1;
             }
             return result;
         }
