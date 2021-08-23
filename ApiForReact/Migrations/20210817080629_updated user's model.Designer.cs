@@ -3,14 +3,16 @@ using System;
 using ApiForReact.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ApiForReact.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210817080629_updated user's model")]
+    partial class updatedusersmodel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -111,6 +113,9 @@ namespace ApiForReact.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid?>("ContactsId")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Info")
                         .HasColumnType("TEXT");
 
@@ -129,10 +134,7 @@ namespace ApiForReact.Migrations
                     b.Property<string>("ResumeText")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<Guid?>("UserContactsId")
+                    b.Property<string>("Status")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -140,8 +142,6 @@ namespace ApiForReact.Migrations
                     b.HasIndex("ContactsId");
 
                     b.HasIndex("LocationId");
-
-                    b.HasIndex("UserContactsId");
 
                     b.ToTable("Users");
                 });
@@ -248,9 +248,9 @@ namespace ApiForReact.Migrations
                         .WithMany()
                         .HasForeignKey("LocationId");
 
-                    b.Navigation("Location");
+                    b.Navigation("Contacts");
 
-                    b.Navigation("UserContacts");
+                    b.Navigation("Location");
                 });
 
             modelBuilder.Entity("ApiForReact.Data.Dto.Dialog", b =>

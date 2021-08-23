@@ -7,7 +7,7 @@ namespace ApiForReact.Models
         public string Name { get; set; }
         public Guid Id { get; set; }
         public string PhotoUrl { get; set; }
-        public int Status { get; set; }
+        public string Status { get; set; }
         public int Followed { get; set; }
         public Location Location { get; set; }
 
@@ -31,18 +31,6 @@ namespace ApiForReact.Models
                     {
                         City = user.Location.City,
                         Country = user.Location.Country
-                    },
-                    Info = user.Info,
-                    IsLookingForAJob = user.IsLookingForAJob,
-                    ResumeText = user.ResumeText,
-                    UserContacts = new UserContacts
-                    {
-                        Facebook = user.UserContacts.Facebook,
-                        GitHub = user.UserContacts.GitHub,
-                        Instagram = user.UserContacts.Instagram,
-                        Twitter = user.UserContacts.Twitter,
-                        Vk = user.UserContacts.Vk,
-                        Youtube = user.UserContacts.Youtube
                     }
                 };
             }

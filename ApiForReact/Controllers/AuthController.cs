@@ -2,6 +2,7 @@
 using ApiForReact.Models.Results;
 using ApiForReact.Repositories.Intarfaces;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Security.Claims;
@@ -14,8 +15,12 @@ namespace ApiForReact.Controllers
     public class AuthController : ControllerBase
     {
         private IAuthRepository _authService;
-        public AuthController(IAuthRepository authService) =>
+        private IUsersRepository _usersRepository;
+        public AuthController(IAuthRepository authService, IUsersRepository usersRepository)
+        {
             _authService = authService;
+            _usersRepository = usersRepository;
+        }
 
         [HttpGet("status")]
         public IActionResult GetAuth() 
@@ -77,11 +82,35 @@ namespace ApiForReact.Controllers
                 {
                     Email = "vlad@senko.com",
                     Login = loginModel.Login,
-                    UserId = Guid.Parse("32384AD8-6DEA-49C6-8880-D3BD02FB1A13")
+                    UserId = Guid.Parse("19645127-3EEA-4444-9F0F-124BFE75E775")
                 },
                 ResultCode = 0
             };
             return Ok(resultOk);
+        }
+
+        [Authorize]
+        [HttpGet("logout")] 
+        public async Task<IActionResult> Logout()
+        {
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            var userId = Guid.Parse(claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value);
+            BaseResult<string> result = new BaseResult<string>();
+
+            if ((await _usersRepository.GetUser(userId)).ResultCode == 0)
+            {
+                await Request.HttpContext.SignOutAsync();
+                result.Message = "Success";
+                result.Result = "Ok";
+                result.ResultCode = 0;
+                return Ok(result);
+            }
+
+            result.Message = "Bad result";
+            result.Result = "Something is happened";
+            result.ResultCode = -1;
+
+            return Ok(result);
         }
     }
 

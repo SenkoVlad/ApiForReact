@@ -26,12 +26,12 @@ namespace ApiForReact.Repositories.Implementations
                     Result = "Error",
                     ResultCode = -1
                 };
-            
+
             var result = _appDbContext.UsersUsers.Add(new Data.Dto.UserUser
             {
                 Id = Guid.NewGuid(),
                 SubscriberUserId = srcUserId,
-                SubscriptionUserId = destUserId 
+                SubscriptionUserId = destUserId
             });
             var saveResult = await _appDbContext.SaveChangesAsync();
 
@@ -66,7 +66,7 @@ namespace ApiForReact.Repositories.Implementations
 
             var usersUsersRow = await _appDbContext.UsersUsers.FirstOrDefaultAsync(item => item.SubscriberUserId == srcUserId && item.SubscriptionUserId == destUserId);
 
-            if(usersUsersRow == null)
+            if (usersUsersRow == null)
                 return new BaseResult<string>
                 {
                     Message = "Smth wrong",
@@ -89,7 +89,7 @@ namespace ApiForReact.Repositories.Implementations
             {
                 Message = "Smth wrong",
                 Result = "Smth wrong",
-                ResultCode = - 1
+                ResultCode = -1
             };
         }
 
@@ -132,7 +132,7 @@ namespace ApiForReact.Repositories.Implementations
                                  users1.Status, 
                                  usersusers3.SubscriberUserId }).Skip((page - 1) * count).Take(count);
 
-            var users = await result.Select(user => new User 
+            var users = await result.Select(user => new User
             {
                 Followed = user.SubscriberUserId == userId ? 1 : 0,
                 Id = user.Id,
@@ -154,6 +154,49 @@ namespace ApiForReact.Repositories.Implementations
                 TotalCount = totalCount
             };
         }
+
+        public async Task<BaseResult<User>> GetUser(Guid id)
+        {
+            var userDto = await _appDbContext.Users.Include(user => user.Contacts)
+                                                   .Include(user => user.Location)
+                                                   .FirstOrDefaultAsync(user => user.Id == id);
+            BaseResult<User> user = new BaseResult<User>();
+            if (userDto != null)
+            {
+                user.Message = "Success";
+                user.Result = User.Mapper.Map(userDto);
+                user.ResultCode = 0;
+            }
+            else
+            {
+                user.Message = "User isn't found";
+                user.Result = null;
+                user.ResultCode = -1;
+            }
+            return user;
+        }
+
+        public async Task<BaseResult<string>> UpdateUserStatus(string status, Guid userId)
+        {
+            var userDto = await _appDbContext.Users.FirstOrDefaultAsync(user => user.Id == userId);
+            BaseResult<string> result = new BaseResult<string>();
+            if (userDto != null)
+            {
+                userDto.Status = status;
+                await _appDbContext.SaveChangesAsync();
+
+                result.Message = "Success";
+                result.Result = "";
+                result.ResultCode = 0;
+
+                return result;
+            }
+
+            result.Message = "user isn't exist";
+            result.Result = "";
+            result.ResultCode = -1;
+
+            return result;
+        }
     }
 }
- 

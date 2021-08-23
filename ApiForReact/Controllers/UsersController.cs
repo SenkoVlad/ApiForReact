@@ -1,4 +1,5 @@
-﻿using ApiForReact.Models;
+﻿using ApiForReact.Controllers.RequestModels;
+using ApiForReact.Models;
 using ApiForReact.Repositories.Intarfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,7 +27,7 @@ namespace ApiForReact.Controllers
 
             BaseResult<UsersResult> result = new BaseResult<UsersResult>
             {
-                Result =  await _usersRepository.GetUsers(page, count, userId),
+                Result = await _usersRepository.GetUsers(page, count, userId),
                 Message = "Success",
                 ResultCode = 0
             };
