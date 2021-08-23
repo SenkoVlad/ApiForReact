@@ -61,6 +61,19 @@ namespace ApiForReact.Data
                     PhotoUrl = "",
                     Status = textGeneratorService.GenerateText(random.Next(5, 10), 3),
                     Location = location,
+                    Info = textGeneratorService.GenerateText(random.Next(5, 10), 5),
+                    ResumeText = textGeneratorService.GenerateText(random.Next(5, 10), 15),
+                    UserContacts = new UserContacts
+                    {
+                        Id = Guid.NewGuid(),
+                        Facebook = "https://facebook.com/" + textGeneratorService.GenerateText(random.Next(5, 10)),
+                        GitHub = "https://github.com/" + textGeneratorService.GenerateText(random.Next(5, 10)),
+                        Instagram = "https://instagram.com/" + textGeneratorService.GenerateText(random.Next(5, 10)),
+                        Twitter = "https://twitter.com/" + textGeneratorService.GenerateText(random.Next(5, 10)),
+                        Vk = "https://vk.com/" + textGeneratorService.GenerateText(random.Next(5, 10)),
+                        Youtube = "https://youtube.com/" + textGeneratorService.GenerateText(random.Next(5, 10))
+                    },
+                    IsLookingForAJob = false
                 };
                 Users.Add(user);
             }

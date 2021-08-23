@@ -11,6 +11,8 @@ namespace ApiForReact.Data
         public DbSet<Message> Messages { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<UserContacts> UserContacts { get; set; }
+
         public DbSet<UserUser> UsersUsers { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> dbContextOptions) : base(dbContextOptions) { }

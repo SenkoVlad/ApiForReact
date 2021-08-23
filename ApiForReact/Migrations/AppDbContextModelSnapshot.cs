@@ -129,15 +129,13 @@ namespace ApiForReact.Migrations
                     b.Property<string>("ResumeText")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Status")
+                        .HasColumnType("TEXT");
 
                     b.Property<Guid?>("UserContactsId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ContactsId");
 
                     b.HasIndex("LocationId");
 
@@ -240,13 +238,13 @@ namespace ApiForReact.Migrations
 
             modelBuilder.Entity("ApiForReact.Data.Dto.User", b =>
                 {
-                    b.HasOne("ApiForReact.Data.Dto.UserContacts", "Contacts")
-                        .WithMany()
-                        .HasForeignKey("ContactsId");
-
                     b.HasOne("ApiForReact.Data.Dto.Location", "Location")
                         .WithMany()
                         .HasForeignKey("LocationId");
+
+                    b.HasOne("ApiForReact.Data.Dto.UserContacts", "UserContacts")
+                        .WithMany()
+                        .HasForeignKey("UserContactsId");
 
                     b.Navigation("Location");
 
