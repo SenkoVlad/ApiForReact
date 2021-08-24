@@ -116,7 +116,7 @@ namespace ApiForReact.Repositories.Implementations
             return result;
         }
         
-        public async Task<UsersResult> GetUsers(int page, int count, Guid userId)
+        public async Task<BaseResult<UsersResult>> GetUsers(int page, int count, Guid userId)
         {
             var result = (from users1 in _appDbContext.Users
                     join  usersusers1 in
@@ -148,17 +148,24 @@ namespace ApiForReact.Repositories.Implementations
 
             var totalCount = await _appDbContext.Users.CountAsync();
 
-            return new UsersResult
+            BaseResult<UsersResult> baseResult = new BaseResult<UsersResult>
             {
-                Items = users,
-                TotalCount = totalCount
+                Result = new UsersResult
+                {
+                    Items = users,
+                    TotalCount = totalCount
+                },
+                Message = "Success",
+                ResultCode = 0
             };
+            return baseResult;
         }
 
         public async Task<BaseResult<string>> UpdateUserStatus(string status, Guid userId)
         {
             var userDto = await _appDbContext.Users.FirstOrDefaultAsync(user => user.Id == userId);
             BaseResult<string> result = new BaseResult<string>();
+            
             if (userDto != null)
             {
                 userDto.Status = status;
