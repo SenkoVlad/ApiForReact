@@ -26,9 +26,9 @@ namespace ApiForReact
                                   builder =>
                                   {
                                       builder.WithOrigins(new string[] { "http://localhost:3000",
-                                                                         "https://apiforreactdocker.azurewebsites.net/",
-                                                                         "https://senkovlad.github.io/",
-                                                                         "https://senkovlad.github.io/react-first-app/"})
+                                                                         "https://apiforreactdocker.azurewebsites.net",
+                                                                         "https://senkovlad.github.io",
+                                                                         "https://senkovlad.github.io/react-first-app"})
                                             .AllowAnyHeader()
                                             .AllowAnyMethod()
                                             .AllowCredentials();
