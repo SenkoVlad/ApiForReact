@@ -56,7 +56,7 @@ namespace ApiForReact.Data
 
                 User user = new User
                 {
-                    Id = Guid.NewGuid(),
+                    Id = i == 0 ? Guid.Parse("b0ff03bc-900d-4237-894a-9813dfc06838") : Guid.NewGuid(),
                     Name = textGeneratorService.GenerateText(random.Next(5, 10), 2),
                     PhotoUrl = "",
                     Status = textGeneratorService.GenerateText(random.Next(5, 10), 3),

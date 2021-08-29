@@ -25,7 +25,8 @@ namespace ApiForReact
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                   builder =>
                                   {
-                                      builder.WithOrigins("http://localhost:3000")
+                                      builder.WithOrigins(new string[] { "http://localhost:3000",
+                                                                         "https://apiforreactdocker.azurewebsites.net/" })
                                             .AllowAnyHeader()
                                             .AllowAnyMethod()
                                             .AllowCredentials();
@@ -42,6 +43,7 @@ namespace ApiForReact
                 options.Cookie.Name = "react-web-cookie";
                 options.ExpireTimeSpan = System.TimeSpan.FromDays(10);
                 options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.None;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.Events = new CookieAuthenticationEvents
                 {
                     OnRedirectToLogin = redirectContext =>
@@ -73,10 +75,8 @@ namespace ApiForReact
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            app.UseDeveloperExceptionPage();
+            
             DbInitializerExtention.InitializeAsync(app);
 
             app.UseSwagger();
