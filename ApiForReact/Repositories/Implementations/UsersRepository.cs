@@ -1,6 +1,9 @@
 ﻿using ApiForReact.Data;
+using ApiForReact.Helpers;
 using ApiForReact.Models;
 using ApiForReact.Repositories.Intarfaces;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
@@ -11,8 +14,15 @@ namespace ApiForReact.Repositories.Implementations
     public class UsersRepository : IUsersRepository
     {
         private AppDbContext _appDbContext;
-        public UsersRepository(AppDbContext appDbContext) =>
+        private readonly IWebHostEnvironment _hostingEnvironment;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public UsersRepository(AppDbContext appDbContext, IWebHostEnvironment hostingEnvironment, IHttpContextAccessor httpContextAccessor)
+        {
             _appDbContext = appDbContext;
+            _hostingEnvironment = hostingEnvironment;
+            _httpContextAccessor = httpContextAccessor;
+        }
 
         public async Task<BaseResult<string>> FollowUser(Guid srcUserId, Guid destUserId)
         {
@@ -178,7 +188,35 @@ namespace ApiForReact.Repositories.Implementations
                 return result;
             }
 
-            result.Message = "user isn't exist";
+            result.Message = "user doesn't exist";
+            result.Result = "";
+            result.ResultCode = -1;
+
+            return result;
+        }
+
+        public async Task<BaseResult<string>> SavePhoto(IFormFile file, Guid userId)
+        {
+            var userDto = await _appDbContext.Users.FirstOrDefaultAsync(user => user.Id == userId);
+            BaseResult<string> result = new BaseResult<string>();
+
+            if (userDto != null)
+            {
+                var wwwroot = _hostingEnvironment.WebRootPath;
+
+                var url = _httpContextAccessor.HttpContext.Request.Scheme + "://" + _httpContextAccessor.HttpContext.Request.Host;
+
+                userDto.PhotoUrl = await ImageHelper.SaveImageAsync(file, userId, wwwroot, url);
+                await _appDbContext.SaveChangesAsync();
+
+                result.Message = "Success";
+                result.Result = userDto.PhotoUrl;
+                result.ResultCode = 0;
+
+                return result;
+            }
+
+            result.Message = "uses doesn't exist";
             result.Result = "";
             result.ResultCode = -1;
 

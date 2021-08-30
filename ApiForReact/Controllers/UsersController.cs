@@ -2,6 +2,7 @@
 using ApiForReact.Models;
 using ApiForReact.Repositories.Intarfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Security.Claims;
@@ -63,6 +64,16 @@ namespace ApiForReact.Controllers
         {
             var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var result = await _usersRepository.UpdateUserStatus(status.status, userId);
+
+            return Ok(result);
+        }
+
+        [Authorize]
+        [HttpPut("savephoto")]
+        public async Task<IActionResult> SavePhoto(IFormFile image)
+        {
+            var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var result = await _usersRepository.SavePhoto(image, userId);
 
             return Ok(result);
         }

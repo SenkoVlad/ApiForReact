@@ -8,8 +8,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace ApiForReact
@@ -61,6 +63,7 @@ namespace ApiForReact
 
             services.AddScoped<IUsersRepository, UsersRepository>();
             services.AddScoped<IAuthRepository, AuthRepository>();
+            services.AddHttpContextAccessor();
 
             services.AddDbContext<AppDbContext>(options =>
             {
@@ -87,6 +90,13 @@ namespace ApiForReact
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
 
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(
+                                    Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot/images")),
+                RequestPath = new PathString("/images")
+            });
+            
             app.UseRouting();
 
             app.UseAuthentication();
