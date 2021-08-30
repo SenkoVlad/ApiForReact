@@ -31,6 +31,18 @@ namespace ApiForReact.Models
                     {
                         City = user.Location.City,
                         Country = user.Location.Country
+                    },
+                    IsLookingForAJob = user.IsLookingForAJob,
+                    Info = user.Info,
+                    ResumeText = user.ResumeText,
+                    UserContacts = new UserContacts 
+                    {
+                        Facebook = user.UserContacts.Facebook,
+                        GitHub = user.UserContacts.GitHub,
+                        Instagram = user.UserContacts.Instagram,
+                        Twitter = user.UserContacts.Twitter,
+                        Vk = user.UserContacts.Vk,
+                        Youtube = user.UserContacts.Youtube
                     }
                 };
             }
