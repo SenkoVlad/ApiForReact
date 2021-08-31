@@ -13,5 +13,6 @@ namespace ApiForReact.Repositories.Intarfaces
         public Task<BaseResult<User>> GetUser(Guid userId);
         public Task<BaseResult<string>> UpdateUserStatus(string status, Guid userId);
         public Task<BaseResult<string>> SavePhoto(IFormFile file, Guid userId);
+        public Task<BaseResult<User>> UpdateUser(Guid userId, User user);
     }
 }

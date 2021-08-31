@@ -30,8 +30,18 @@ namespace ApiForReact.Controllers
             return Ok(result);
         }
 
+        [Authorize]
+        [HttpPut]
+        public async Task<IActionResult> UpdateUser([FromBody] User user)
+        {
+            var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var result = await _usersRepository.UpdateUser(userId, user);
+
+            return Ok(result);
+        }
+
         [HttpGet("{userId}")]
-        public async Task<IActionResult> GetUserProfile(Guid userId)
+        public async Task<IActionResult> GetUser(Guid userId)
         {
             var user = await _usersRepository.GetUser(userId);
             return Ok(user);

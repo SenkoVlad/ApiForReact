@@ -107,6 +107,7 @@ namespace ApiForReact.Repositories.Implementations
         {
             var userDto = await _appDbContext.Users.Include(item => item.Location)
                                                 .Include(item => item.UserContacts)
+                                                .AsNoTracking()
                                                 .FirstOrDefaultAsync(user => user.Id == userId);
             BaseResult<User> result = new BaseResult<User>();
 
@@ -154,7 +155,7 @@ namespace ApiForReact.Repositories.Implementations
                 Name = user.Name,
                 PhotoUrl = user.PhotoUrl,
                 Status = user.Status
-            }).ToListAsync();
+            }).AsNoTracking().ToListAsync();
 
             var totalCount = await _appDbContext.Users.CountAsync();
 
@@ -184,7 +185,7 @@ namespace ApiForReact.Repositories.Implementations
                 result.Message = "Success";
                 result.Result = "";
                 result.ResultCode = 0;
-
+                    
                 return result;
             }
 
@@ -220,6 +221,44 @@ namespace ApiForReact.Repositories.Implementations
             result.Result = "";
             result.ResultCode = -1;
 
+            return result;
+        }
+
+        public async Task<BaseResult<User>> UpdateUser(Guid userId, User user)
+        {
+            var result = new BaseResult<User>();
+            if(userId != user.Id)
+            {
+                result.Message = "you can't update another user";
+                result.Result = null;
+                result.ResultCode = -1;
+                return result;
+            }
+            var validationError = Validator.ValidateUserContacts(user.UserContacts);
+            if(!string.IsNullOrWhiteSpace(validationError))
+            {
+                result.Message = validationError;
+                result.Result = null;
+                result.ResultCode = -1;
+                return result;
+            }
+            var userDto = await _appDbContext.Users.Include(item => item.Location)
+                                                   .Include(item => item.UserContacts)
+                                                   .FirstOrDefaultAsync(user => user.Id == userId);
+            if(userDto == null)
+            {
+                result.Message = "user isn't found";
+                result.Result = null;
+                result.ResultCode = -1;
+                return result;
+            }
+            Data.Dto.User.Map(user, userDto);
+            await _appDbContext.SaveChangesAsync();
+
+            var newUser = User.Mapper.Map(userDto);
+            result.Message = "Success";
+            result.Result = newUser;
+            result.ResultCode = 0;
             return result;
         }
     }
