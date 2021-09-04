@@ -11,13 +11,13 @@ using System.Threading.Tasks;
 
 namespace ApiForReact.Repositories.Implementations
 {
-    public class UsersRepository : IUsersRepository
+    public class UserRepository : IUserRepository
     {
         private AppDbContext _appDbContext;
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UsersRepository(AppDbContext appDbContext, IWebHostEnvironment hostingEnvironment, IHttpContextAccessor httpContextAccessor)
+        public UserRepository(AppDbContext appDbContext, IWebHostEnvironment hostingEnvironment, IHttpContextAccessor httpContextAccessor)
         {
             _appDbContext = appDbContext;
             _hostingEnvironment = hostingEnvironment;
@@ -29,7 +29,7 @@ namespace ApiForReact.Repositories.Implementations
             var srcUser = await _appDbContext.Users.FirstOrDefaultAsync(user => user.Id == srcUserId);
             var destUser = await _appDbContext.Users.FirstOrDefaultAsync(user => user.Id == destUserId);
 
-            if (srcUser == null || destUser == null)
+            if (srcUser == null || destUser == null && srcUserId != destUserId)
                 return new BaseResult<string>
                 {
                     Message = "User doesn't exists",
@@ -66,7 +66,7 @@ namespace ApiForReact.Repositories.Implementations
             var srcUser = await _appDbContext.Users.FirstOrDefaultAsync(user => user.Id == srcUserId);
             var destUser = await _appDbContext.Users.FirstOrDefaultAsync(user => user.Id == destUserId);
 
-            if (srcUser == null || destUser == null)
+            if (srcUser == null || destUser == null && srcUserId != destUserId)
                 return new BaseResult<string>
                 {
                     Message = "User doesn't exists",
@@ -103,6 +103,16 @@ namespace ApiForReact.Repositories.Implementations
             };
         }
 
+        public async Task<User> GetUserByLoginPassword(string login, string password)
+        {
+            var userDto = await _appDbContext.Users.AsNoTracking()
+                                                   .Include(user => user.Location)
+                                                   .Include(user => user.UserContacts)
+                                                   .FirstOrDefaultAsync(user => user.Name == login && user.Password == password);
+            if (userDto != null)
+                return User.Mapper.Map(userDto);
+            return null;
+        }
         public async Task<BaseResult<User>> GetUser(Guid userId)
         {
             var userDto = await _appDbContext.Users.Include(item => item.Location)
@@ -133,10 +143,11 @@ namespace ApiForReact.Repositories.Implementations
                     join  usersusers1 in
                     (
                     from usersusers2 in _appDbContext.UsersUsers
-                    where usersusers2.SubscriberUserId == userId
+                    where usersusers2.SubscriberUserId == userId 
                     select new { usersusers2.SubscriberUserId, usersusers2.SubscriptionUserId }
                     ) on users1.Id equals usersusers1.SubscriptionUserId into u_left
                     from usersusers3 in u_left.DefaultIfEmpty()
+                    where users1.Id != userId
                     select new { users1.Id, users1.Location.City, 
                                  users1.Location.Country, 
                                  users1.Name, users1.PhotoUrl, 

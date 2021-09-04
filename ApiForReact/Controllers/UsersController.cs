@@ -14,8 +14,8 @@ namespace ApiForReact.Controllers
     [Route("[controller]")]
     public class UsersController : ControllerBase
     {
-        IUsersRepository _usersRepository;
-        public UsersController(IUsersRepository usersRepository) =>
+        IUserRepository _usersRepository;
+        public UsersController(IUserRepository usersRepository) =>
             _usersRepository = usersRepository;
 
         [HttpGet]

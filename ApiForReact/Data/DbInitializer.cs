@@ -56,7 +56,7 @@ namespace ApiForReact.Data
 
                 User user = new User
                 {
-                    Id = i == 0 ? Guid.Parse("b0ff03bc-900d-4237-894a-9813dfc06838") : Guid.NewGuid(),
+                    Id = Guid.NewGuid(),
                     Name = textGeneratorService.GenerateText(random.Next(5, 10), 2),
                     PhotoUrl = "",
                     Status = textGeneratorService.GenerateText(random.Next(5, 10), 3),
@@ -73,7 +73,9 @@ namespace ApiForReact.Data
                         Vk = "https://vk.com/" + textGeneratorService.GenerateText(random.Next(5, 10)),
                         Youtube = "https://youtube.com/" + textGeneratorService.GenerateText(random.Next(5, 10))
                     },
-                    IsLookingForAJob = false
+                    IsLookingForAJob = false,
+                    Email = textGeneratorService.GenerateText(5) + "@" + textGeneratorService.GenerateText(6) + ".com",
+                    Password = "1111"
                 };
                 Users.Add(user);
             }

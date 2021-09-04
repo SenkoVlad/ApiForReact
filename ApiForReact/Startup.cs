@@ -2,6 +2,8 @@ using ApiForReact.Data;
 using ApiForReact.Repositories.Implementations;
 using ApiForReact.Repositories.Intarfaces;
 using ApiForReact.Services;
+using ApiForReact.Services.Implementations;
+using ApiForReact.Services.Intarfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -61,8 +63,10 @@ namespace ApiForReact
 
             services.AddSingleton<ITextGeneratorService, TextGeneratorService>();
 
-            services.AddScoped<IUsersRepository, UsersRepository>();
-            services.AddScoped<IAuthRepository, AuthRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IAuthService, AuthService>();
+
             services.AddHttpContextAccessor();
 
             services.AddDbContext<AppDbContext>(options =>

@@ -1,6 +1,7 @@
 ﻿using ApiForReact.Models;
 using ApiForReact.Models.Results;
 using ApiForReact.Repositories.Intarfaces;
+using ApiForReact.Services.Intarfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,12 +15,12 @@ namespace ApiForReact.Controllers
     [Route("[controller]")]
     public class AuthController : ControllerBase
     {
-        private IAuthRepository _authService;
-        private IUsersRepository _usersRepository;
-        public AuthController(IAuthRepository authService, IUsersRepository usersRepository)
+        private IUserRepository _usersRepository;
+        private IAuthService _authService;
+        public AuthController( IUserRepository usersRepository, IAuthService authService)
         {
-            _authService = authService;
             _usersRepository = usersRepository;
+            _authService = authService;
         }
 
         [HttpGet("status")]
@@ -35,7 +36,7 @@ namespace ApiForReact.Controllers
                     Result = new LoginResult
                     {
                         Email = claimsIdentity.FindFirst(ClaimTypes.Email).Value,
-                        Login = claimsIdentity.FindFirst(ClaimTypes.Name).Value,
+                        Name = claimsIdentity.FindFirst(ClaimTypes.Name).Value,
                         UserId = Guid.Parse(claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value)
                     },
                     ResultCode = 0
@@ -54,39 +55,23 @@ namespace ApiForReact.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody]LoginModel loginModel)
         {
-            if (!_authService.Login(loginModel.Login, loginModel.Password))
-            {
-                BaseResult<LoginResult> result = new BaseResult<LoginResult>
-                {
-                    Message = "Your login data is incorrect",
-                    Result = null,
-                    ResultCode = 1
-                };
-                return Ok(result);
-            }
+            var loginResult = await _authService.Login(loginModel.Login, loginModel.Password);
+
+            if (loginResult.Result == null)
+                return BadRequest(loginResult);
 
             var claimsIdentity = new ClaimsIdentity(new[]
             {
-                new Claim(ClaimTypes.Name, loginModel.Login),
-                new Claim(ClaimTypes.Email, "vlad@senko.com"),
+                new Claim(ClaimTypes.Name, loginResult.Result.Name),
+                new Claim(ClaimTypes.Email, loginResult.Result.Email),
                 new Claim(ClaimTypes.Role, "user"),
-                new Claim(ClaimTypes.NameIdentifier, "b0ff03bc-900d-4237-894a-9813dfc06838"),
+                new Claim(ClaimTypes.NameIdentifier, loginResult.Result.Id.ToString()),
             }, "Cookies");
+
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
             await Request.HttpContext.SignInAsync("Cookies", claimsPrincipal);
 
-            BaseResult<LoginResult> resultOk = new BaseResult<LoginResult>
-            {
-                Message = "You are authorized",
-                Result = new LoginResult
-                {
-                    Email = "vlad@senko.com",
-                    Login = loginModel.Login,
-                    UserId = Guid.Parse("b0ff03bc-900d-4237-894a-9813dfc06838")
-                },
-                ResultCode = 0
-            };
-            return Ok(resultOk);
+            return Ok(loginResult);
         }
 
         [Authorize]

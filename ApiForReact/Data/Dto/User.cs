@@ -17,7 +17,8 @@ namespace ApiForReact.Data.Dto
         public string Info { get; set; }
         public bool IsLookingForAJob { get; set; }
         public string ResumeText { get; set; }
-
+        public string Password { get; set; }
+        public string Email { get; set; }
         public static void Map(Models.User userModel, User userDto)
         {
             userDto.IsLookingForAJob = userModel.IsLookingForAJob;
@@ -32,6 +33,7 @@ namespace ApiForReact.Data.Dto
             userDto.UserContacts.Youtube = userModel.UserContacts.Youtube;
             userDto.UserContacts.Twitter = userModel.UserContacts.Twitter;
             userDto.UserContacts.Vk = userModel.UserContacts.Vk;
+            userDto.Email = userModel.Email;
         }
     }
 }

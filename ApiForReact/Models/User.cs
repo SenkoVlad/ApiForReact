@@ -10,7 +10,7 @@ namespace ApiForReact.Models
         public string Status { get; set; }
         public int Followed { get; set; }
         public Location Location { get; set; }
-
+        public string Email { get; set; }
         public UserContacts UserContacts { get; set; }
         public string Info { get; set; }
         public bool IsLookingForAJob { get; set; }
@@ -35,7 +35,7 @@ namespace ApiForReact.Models
                     IsLookingForAJob = user.IsLookingForAJob,
                     Info = user.Info,
                     ResumeText = user.ResumeText,
-                    UserContacts = new UserContacts 
+                    UserContacts = new UserContacts
                     {
                         Facebook = user.UserContacts.Facebook,
                         GitHub = user.UserContacts.GitHub,
@@ -43,7 +43,8 @@ namespace ApiForReact.Models
                         Twitter = user.UserContacts.Twitter,
                         Vk = user.UserContacts.Vk,
                         Youtube = user.UserContacts.Youtube
-                    }
+                    },
+                    Email = user.Email
                 };
             }
         }
