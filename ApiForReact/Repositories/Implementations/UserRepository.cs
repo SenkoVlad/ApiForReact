@@ -152,7 +152,9 @@ namespace ApiForReact.Repositories.Implementations
                                  users1.Location.Country, 
                                  users1.Name, users1.PhotoUrl, 
                                  users1.Status, 
-                                 usersusers3.SubscriberUserId }).Skip((page - 1) * count).Take(count);
+                                 usersusers3.SubscriberUserId }).AsNoTracking()
+                                                                .Skip((page - 1) * count)
+                                                                .Take(count);
 
             var users = await result.Select(user => new User
             {

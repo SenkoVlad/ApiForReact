@@ -44,6 +44,7 @@ namespace ApiForReact
             {
                 option.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 option.DefaultSignOutScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                option.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             }).AddCookie(options =>
             {
                 options.Cookie.Name = "react-web-cookie";
@@ -64,8 +65,10 @@ namespace ApiForReact
             services.AddSingleton<ITextGeneratorService, TextGeneratorService>();
 
             services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IDialogRepository, DialogRepository>();
+
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IDialogService, DialogService>();
 
             services.AddHttpContextAccessor();
 
