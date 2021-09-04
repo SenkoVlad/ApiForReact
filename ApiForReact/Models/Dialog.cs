@@ -7,7 +7,7 @@ namespace ApiForReact.Models
         public Guid Id { get; set; }
         public Guid  UserOwnerId { get; set; }
         public Guid UserCompanionId { get; set; }
-
+        public string Name { get; set; }
         public static Dialog Map(Data.Dto.Dialog dialogDto)
         {
             return new Dialog
