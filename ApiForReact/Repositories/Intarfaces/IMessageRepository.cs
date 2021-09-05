@@ -8,7 +8,7 @@ namespace ApiForReact.Repositories.Intarfaces
     public interface IMessageRepository
     {
         public Task<MessagesResult> GetMessages(Guid dialogId, int page, int count);
-        public Task<string> SendMessage(string text, Guid dialogId);
+        public Task<string> SendMessage(string text, Guid dialogId, Guid userOwnerId);
         public Task<int> DeleteMessage(Guid userId, Guid messageId);
     }
 }

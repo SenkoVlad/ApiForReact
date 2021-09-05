@@ -9,9 +9,12 @@ namespace ApiForReact.Data.Dto
     public class UserUser
     {
         public Guid Id { get; set; }
-        [ForeignKey("User")]
         public Guid SubscriberUserId { get; set; }
-        [ForeignKey("User")]
         public Guid  SubscriptionUserId { get; set; }
+
+        [ForeignKey("SubscriberUserId")]
+        public virtual User SubscriberUser { get; set; }
+        [ForeignKey("SubscriptionUserId")]
+        public virtual User SubscriptionUser { get; set; }
     }
 }

@@ -31,9 +31,9 @@ namespace ApiForReact.Services.Implementations
             };
         }
 
-        public async Task<BaseResult<string>> SendMessage(string message, Guid dialogId)
+        public async Task<BaseResult<string>> SendMessage(string message, Guid dialogId, Guid userOwnerId)
         {
-            var result = await _messageRepository.SendMessage(message, dialogId);
+            var result = await _messageRepository.SendMessage(message, dialogId, userOwnerId);
 
             if(result != "dialog doesn't exist")
             {

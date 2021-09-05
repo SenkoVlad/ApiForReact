@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiForReact.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210905153959_updated message_2 model")]
-    partial class updatedmessage_2model
+    [Migration("20210905164811_init3")]
+    partial class init3
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,17 +24,17 @@ namespace ApiForReact.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("UserCompanionId")
+                    b.Property<Guid>("CompanionUserId")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("UserOwnerId")
+                    b.Property<Guid>("OwnerUserId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserCompanionId");
+                    b.HasIndex("CompanionUserId");
 
-                    b.HasIndex("UserOwnerId");
+                    b.HasIndex("OwnerUserId");
 
                     b.ToTable("Dialogs");
                 });
@@ -65,7 +65,7 @@ namespace ApiForReact.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("DialogId")
+                    b.Property<Guid>("DialogId")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Status")
@@ -74,19 +74,19 @@ namespace ApiForReact.Migrations
                     b.Property<string>("Text")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("UserCompanionId")
+                    b.Property<Guid>("UserIdCompanion")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("UserOwnerId")
+                    b.Property<Guid>("UserIdOwner")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.HasIndex("DialogId");
 
-                    b.HasIndex("UserCompanionId");
+                    b.HasIndex("UserIdCompanion");
 
-                    b.HasIndex("UserOwnerId");
+                    b.HasIndex("UserIdOwner");
 
                     b.ToTable("Messages");
                 });
@@ -201,6 +201,8 @@ namespace ApiForReact.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("SubscriptionUserId");
+
                     b.HasIndex("SubscriberUserId", "SubscriptionUserId")
                         .IsUnique();
 
@@ -209,32 +211,42 @@ namespace ApiForReact.Migrations
 
             modelBuilder.Entity("ApiForReact.Data.Dto.Dialog", b =>
                 {
-                    b.HasOne("ApiForReact.Data.Dto.User", "UserCompanion")
+                    b.HasOne("ApiForReact.Data.Dto.User", "CompanionUser")
                         .WithMany()
-                        .HasForeignKey("UserCompanionId");
+                        .HasForeignKey("CompanionUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("ApiForReact.Data.Dto.User", "UserOwner")
+                    b.HasOne("ApiForReact.Data.Dto.User", "OwnerUser")
                         .WithMany()
-                        .HasForeignKey("UserOwnerId");
+                        .HasForeignKey("OwnerUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("UserCompanion");
+                    b.Navigation("CompanionUser");
 
-                    b.Navigation("UserOwner");
+                    b.Navigation("OwnerUser");
                 });
 
             modelBuilder.Entity("ApiForReact.Data.Dto.Message", b =>
                 {
                     b.HasOne("ApiForReact.Data.Dto.Dialog", "Dialog")
                         .WithMany("Messages")
-                        .HasForeignKey("DialogId");
+                        .HasForeignKey("DialogId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("ApiForReact.Data.Dto.User", "UserCompanion")
                         .WithMany()
-                        .HasForeignKey("UserCompanionId");
+                        .HasForeignKey("UserIdCompanion")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("ApiForReact.Data.Dto.User", "UserOwner")
                         .WithMany()
-                        .HasForeignKey("UserOwnerId");
+                        .HasForeignKey("UserIdOwner")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Dialog");
 
@@ -265,6 +277,25 @@ namespace ApiForReact.Migrations
                     b.Navigation("Location");
 
                     b.Navigation("UserContacts");
+                });
+
+            modelBuilder.Entity("ApiForReact.Data.Dto.UserUser", b =>
+                {
+                    b.HasOne("ApiForReact.Data.Dto.User", "SubscriberUser")
+                        .WithMany()
+                        .HasForeignKey("SubscriberUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ApiForReact.Data.Dto.User", "SubscriptionUser")
+                        .WithMany()
+                        .HasForeignKey("SubscriptionUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("SubscriberUser");
+
+                    b.Navigation("SubscriptionUser");
                 });
 
             modelBuilder.Entity("ApiForReact.Data.Dto.Dialog", b =>

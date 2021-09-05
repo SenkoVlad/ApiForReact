@@ -3,6 +3,7 @@ using ApiForReact.Services.Intarfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ApiForReact.Controllers
@@ -30,7 +31,10 @@ namespace ApiForReact.Controllers
         [HttpPost]
         public async Task<IActionResult> SendMessage([FromBody] string message, Guid dialogId)
         {
-            var result = await _messageService.SendMessage(message, dialogId);
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            var userId = Guid.Parse(claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+            var result = await _messageService.SendMessage(message, dialogId, userId);
             return Ok(result);
         }
     }

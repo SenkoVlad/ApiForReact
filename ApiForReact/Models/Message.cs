@@ -16,8 +16,8 @@ namespace ApiForReact.Models
             return new Message
             {
                 Id = messageDto.Id,
-                UserCompanionId = messageDto.UserCompanionId,
-                UserOwnerId = messageDto.UserOwnerId,
+                UserCompanionId = messageDto.UserIdCompanion,
+                UserOwnerId = messageDto.UserIdOwner,
                 Text = messageDto.Text,
                 Status = messageDto.Status,
                 Date = messageDto.Date

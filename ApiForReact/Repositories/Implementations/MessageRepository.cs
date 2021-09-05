@@ -27,7 +27,7 @@ namespace ApiForReact.Repositories.Implementations
                                                       .Where(dialog => dialog.Id == dialogId)
                                                       .Select(dialog => dialog.Messages.Skip((page - 1) * count).Take(count))
                                                       .FirstOrDefaultAsync();
-            
+
             var totalCount = await _appDbContext.Dialogs.AsNoTracking()
                                                         .Where(dialog => dialog.Id == dialogId)
                                                         .Select(dialog => dialog.Messages.Count)
@@ -39,15 +39,17 @@ namespace ApiForReact.Repositories.Implementations
             };
         }
 
-        public async Task<string> SendMessage(string text, Guid dialogId)
+        public async Task<string> SendMessage(string text, Guid dialogId, Guid userOwnerId)
         {
             var dialog = await _appDbContext.Dialogs.Select(item => new {id = item.Id, 
-                                                                         userCompanionId = item.UserCompanionId,
-                                                                         userOwnerId = item.UserOwnerId})
+                                                                         userCompanionId = item.CompanionUserId,
+                                                                         userOwnerId = item.OwnerUserId})
                                                     .FirstOrDefaultAsync(dialog => dialog.id == dialogId);
 
-            if (dialog == null || dialog.userCompanionId == Guid.Empty || dialog.userOwnerId == Guid.Empty)
+            if (dialog == null || (userOwnerId != dialog.userCompanionId && userOwnerId != dialog.userOwnerId))
                 return "dialog doesn't exist";
+
+            var CompanionUserId = userOwnerId == dialog.userCompanionId ? dialog.userOwnerId : dialog.userCompanionId;
 
             Guid id = Guid.NewGuid();
             var newMessage = new Data.Dto.Message
@@ -56,8 +58,8 @@ namespace ApiForReact.Repositories.Implementations
                 Date = DateTime.Now,
                 Status = 0,
                 Text = text,
-                UserCompanionId = dialog.userCompanionId,
-                UserOwnerId = dialog.userOwnerId,
+                UserIdCompanion = CompanionUserId,
+                UserIdOwner = userOwnerId,
                 DialogId = dialog.id
             };
             
