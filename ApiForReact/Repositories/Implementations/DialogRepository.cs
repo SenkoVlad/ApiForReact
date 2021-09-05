@@ -61,7 +61,7 @@ namespace ApiForReact.Repositories.Implementations
         public async Task<int> StartDialog(Guid userOwnerId, Guid userCompanionId)
         {
             var dialog = await _appDbContext.Dialogs.AsNoTracking()
-                                                    .FirstOrDefaultAsync(dialog => dialog.UserOwner.Id == userOwnerId && dialog.UserCompanion.Id == userCompanionId);
+                                                    .FirstOrDefaultAsync(dialog => dialog.UserOwner.Id == userOwnerId || dialog.UserCompanion.Id == userCompanionId);
             var userOwner = await _appDbContext.Users.FirstOrDefaultAsync(user => user.Id == userOwnerId);
             var userCompanion = await _appDbContext.Users.FirstOrDefaultAsync(user => user.Id == userCompanionId);
 

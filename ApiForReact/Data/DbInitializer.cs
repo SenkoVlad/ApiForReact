@@ -16,8 +16,6 @@ namespace ApiForReact.Data
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
                 var context = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>();
-                context.Database.Migrate();
-
                 Initialize(context, app);
             }
         }
@@ -56,8 +54,8 @@ namespace ApiForReact.Data
 
                 User user = new User
                 {
-                    Id = Guid.NewGuid(),
-                    Name = textGeneratorService.GenerateText(random.Next(5, 10), 2),
+                    Id = i == 0 ? Guid.Parse("f6703ebc-be8c-4552-b11a-1e6f5a34bcf5") : Guid.NewGuid(),
+                    Name = i == 0 ? "vlad" : textGeneratorService.GenerateText(random.Next(5, 10), 2),
                     PhotoUrl = "",
                     Status = textGeneratorService.GenerateText(random.Next(5, 10), 3),
                     Location = location,
