@@ -65,9 +65,11 @@ namespace ApiForReact
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IDialogRepository, DialogRepository>();
+            services.AddScoped<IMessageRepository, MessageRepository>();
 
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IDialogService, DialogService>();
+            services.AddScoped<IMessageService, MessageService>();
 
             services.AddHttpContextAccessor();
 

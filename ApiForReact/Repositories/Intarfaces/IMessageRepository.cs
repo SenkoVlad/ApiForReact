@@ -1,15 +1,14 @@
 ﻿using ApiForReact.Models;
+using ApiForReact.Models.Results;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace ApiForReact.Repositories.Intarfaces
 {
     public interface IMessageRepository
     {
-        public Task<int> SendMessage(Guid fromUserId, Guid toUserId);
-        public Task<IEnumerator<Message>> GetMessages(Guid userId, int page, int count);
+        public Task<MessagesResult> GetMessages(Guid dialogId, int page, int count);
+        public Task<string> SendMessage(string text, Guid dialogId);
         public Task<int> DeleteMessage(Guid userId, Guid messageId);
     }
 }

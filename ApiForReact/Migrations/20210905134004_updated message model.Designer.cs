@@ -3,14 +3,16 @@ using System;
 using ApiForReact.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ApiForReact.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210905134004_updated message model")]
+    partial class updatedmessagemodel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,13 +24,17 @@ namespace ApiForReact.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("UserCompanionId")
+                    b.Property<Guid?>("UserCompanionId")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("UserOwnerId")
+                    b.Property<Guid?>("UserOwnerId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserCompanionId");
+
+                    b.HasIndex("UserOwnerId");
 
                     b.ToTable("Dialogs");
                 });
@@ -59,7 +65,7 @@ namespace ApiForReact.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("DialogId")
+                    b.Property<Guid?>("DialogId")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Status")
@@ -68,15 +74,19 @@ namespace ApiForReact.Migrations
                     b.Property<string>("Text")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("UserCompanionId")
+                    b.Property<Guid?>("UserCompanionId")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("UserOwnerId")
+                    b.Property<Guid?>("UserOwnerId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.HasIndex("DialogId");
+
+                    b.HasIndex("UserCompanionId");
+
+                    b.HasIndex("UserOwnerId");
 
                     b.ToTable("Messages");
                 });
@@ -197,13 +207,38 @@ namespace ApiForReact.Migrations
                     b.ToTable("UsersUsers");
                 });
 
+            modelBuilder.Entity("ApiForReact.Data.Dto.Dialog", b =>
+                {
+                    b.HasOne("ApiForReact.Data.Dto.User", "UserCompanion")
+                        .WithMany()
+                        .HasForeignKey("UserCompanionId");
+
+                    b.HasOne("ApiForReact.Data.Dto.User", "UserOwner")
+                        .WithMany()
+                        .HasForeignKey("UserOwnerId");
+
+                    b.Navigation("UserCompanion");
+
+                    b.Navigation("UserOwner");
+                });
+
             modelBuilder.Entity("ApiForReact.Data.Dto.Message", b =>
                 {
                     b.HasOne("ApiForReact.Data.Dto.Dialog", null)
                         .WithMany("Messages")
-                        .HasForeignKey("DialogId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("DialogId");
+
+                    b.HasOne("ApiForReact.Data.Dto.User", "UserCompanion")
+                        .WithMany()
+                        .HasForeignKey("UserCompanionId");
+
+                    b.HasOne("ApiForReact.Data.Dto.User", "UserOwner")
+                        .WithMany()
+                        .HasForeignKey("UserOwnerId");
+
+                    b.Navigation("UserCompanion");
+
+                    b.Navigation("UserOwner");
                 });
 
             modelBuilder.Entity("ApiForReact.Data.Dto.Post", b =>
