@@ -21,25 +21,33 @@ namespace ApiForReact.Repositories.Implementations
             throw new NotImplementedException();
         }
 
-        public async Task<MessagesResult> GetMessages(Guid dialogId, int page, int count)
+        public async Task<MessagesResult> GetMessages(Guid dialogId, Guid userId, int page, int count)
         {
-            var messages = await _appDbContext.Dialogs.AsNoTracking()
-                                                      .Where(dialog => dialog.Id == dialogId)
-                                                      .Select(dialog => dialog.Messages.Skip((page - 1) * count).Take(count))
-                                                      .FirstOrDefaultAsync();
+            //var messages = await _appDbContext.Dialogs.AsNoTracking()
+            //                                          .Where(dialog => dialog.Id == dialogId && 
+            //                                                          (dialog.CompanionUserId == userId || dialog.OwnerUserId == userId))
+            //                                          .Select(dialog => dialog.Messages.Skip((page - 1) * count).Take(count))
+            //                                          .FirstOrDefaultAsync();
+
+            var messages = await _appDbContext.Messages.AsNoTracking()
+                                                       .Where(message => message.DialogId == dialogId &&
+                                                                         (message.UserIdCompanion == userId || message.UserIdOwner == userId))
+                                                       .ToListAsync();
 
             var totalCount = await _appDbContext.Dialogs.AsNoTracking()
-                                                        .Where(dialog => dialog.Id == dialogId)
+                                                        .Where(dialog => dialog.Id == dialogId &&
+                                                              (dialog.CompanionUserId == userId || dialog.OwnerUserId == userId))
                                                         .Select(dialog => dialog.Messages.Count)
                                                         .FirstOrDefaultAsync();
             return new MessagesResult
             {
                 Items = messages.Select(Message.Map),
-                totalCount = totalCount
+                totalCount = totalCount,
+                dialogId = dialogId
             };
         }
 
-        public async Task<string> SendMessage(string text, Guid dialogId, Guid userOwnerId)
+        public async Task<Message> SendMessage(string text, Guid dialogId, Guid userOwnerId)
         {
             var dialog = await _appDbContext.Dialogs.Select(item => new {id = item.Id, 
                                                                          userCompanionId = item.CompanionUserId,
@@ -47,7 +55,7 @@ namespace ApiForReact.Repositories.Implementations
                                                     .FirstOrDefaultAsync(dialog => dialog.id == dialogId);
 
             if (dialog == null || (userOwnerId != dialog.userCompanionId && userOwnerId != dialog.userOwnerId))
-                return "dialog doesn't exist";
+                return null;
 
             var CompanionUserId = userOwnerId == dialog.userCompanionId ? dialog.userOwnerId : dialog.userCompanionId;
 
@@ -66,7 +74,7 @@ namespace ApiForReact.Repositories.Implementations
             await _appDbContext.Messages.AddAsync(newMessage);
             await _appDbContext.SaveChangesAsync();
 
-            return id.ToString();
+            return Message.Map(newMessage);
         }
     }
 }

@@ -43,7 +43,7 @@ namespace ApiForReact.Repositories.Implementations
                 TotalCount = totalCount
             };
         }
-        public async Task<int> StartDialog(Guid userOwnerId, Guid userCompanionId)
+        public async Task<Guid> StartDialog(Guid userOwnerId, Guid userCompanionId)
         {
             var dialog = await _appDbContext.Dialogs.AsNoTracking()
                                                     .Select(dialog => new {id = dialog.Id, 
@@ -54,16 +54,17 @@ namespace ApiForReact.Repositories.Implementations
                                                                                    (dialog.userCompanionId == userOwnerId && dialog.userOwnerId == userCompanionId));
 
             if (dialog != null)
-                return 0;
+                return dialog.id;
 
+            Guid id = Guid.NewGuid();
             await _appDbContext.Dialogs.AddAsync(new Data.Dto.Dialog
             {
-                Id = Guid.NewGuid(),
+                Id = id,
                 CompanionUserId = userCompanionId,
                 OwnerUserId = userOwnerId
             });
             await _appDbContext.SaveChangesAsync();
-            return 0;
+            return id;
         } 
     }
 }

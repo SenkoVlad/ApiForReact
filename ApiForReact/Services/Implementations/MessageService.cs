@@ -19,9 +19,9 @@ namespace ApiForReact.Services.Implementations
             throw new NotImplementedException();
         }
 
-        public async Task<BaseResult<MessagesResult>> GetMessages(Guid dialogId, int page, int count)
+        public async Task<BaseResult<MessagesResult>> GetMessages(Guid dialogId, Guid userId, int page, int count)
         {
-            var result = await _messageRepository.GetMessages(dialogId, page, count);
+            var result = await _messageRepository.GetMessages(dialogId, userId, page, count);
 
             return new BaseResult<MessagesResult>
             {
@@ -31,23 +31,33 @@ namespace ApiForReact.Services.Implementations
             };
         }
 
-        public async Task<BaseResult<string>> SendMessage(string message, Guid dialogId, Guid userOwnerId)
+        public async Task<BaseResult<Message>> SendMessage(string messageText, Guid dialogId, Guid userOwnerId)
         {
-            var result = await _messageRepository.SendMessage(message, dialogId, userOwnerId);
-
-            if(result != "dialog doesn't exist")
+            if(string.IsNullOrWhiteSpace(messageText))
             {
-                return new BaseResult<string>
+                return new BaseResult<Message>
+                {
+                    Message = "message is empty",
+                    Result = null,
+                    ResultCode = -1
+                };
+            }
+            
+            var message = await _messageRepository.SendMessage(messageText, dialogId, userOwnerId);
+
+            if(message != null)
+            {
+                return new BaseResult<Message>
                 {
                     Message = "success",
-                    Result = result,
+                    Result = message,
                     ResultCode = 0
                 };
             }
-            return new BaseResult<string>
+            return new BaseResult<Message>
             {
-                Message = result,
-                Result = null,
+                Message = "bad request",
+                Result = message,
                 ResultCode = -1
             };
         }

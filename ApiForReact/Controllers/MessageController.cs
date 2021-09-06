@@ -23,7 +23,10 @@ namespace ApiForReact.Controllers
         [HttpGet]
         public async Task<IActionResult> GetMessage(Guid dialogId, int page = 1, int count = 10)
         {
-            var result = await _messageService.GetMessages(dialogId, page, count);
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            var userId = Guid.Parse(claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+            var result = await _messageService.GetMessages(dialogId, userId, page, count);
             return Ok(result);
         }
 

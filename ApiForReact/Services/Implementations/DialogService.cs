@@ -27,24 +27,15 @@ namespace ApiForReact.Services.Implementations
             };
         }
 
-        public async Task<BaseResult<string>> StartDialog(Guid userOwnerId, Guid userCompanionId)
+        public async Task<BaseResult<Guid>> StartDialog(Guid userOwnerId, Guid userCompanionId)
         {
             var result = await _dialogRepository.StartDialog(userOwnerId, userCompanionId);
 
-            if(result == 1)
-            {
-                return new BaseResult<string>
-                {
-                    Message = "user isn't found",
-                    Result = null,
-                    ResultCode = 1
-                };
-            }
 
-            return new BaseResult<string>
+            return new BaseResult<Guid>
             {
                 Message = "success",
-                Result = userCompanionId.ToString(),
+                Result = result,
                 ResultCode = 0
             };
         }
