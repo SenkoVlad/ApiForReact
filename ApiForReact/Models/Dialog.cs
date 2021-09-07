@@ -13,8 +13,8 @@ namespace ApiForReact.Models
             return new Dialog
             {
                 Id = dialogDto.Id,
-                UserCompanionId = dialogDto.UserCompanion.Id,
-                UserOwnerId = dialogDto.UserOwner.Id
+                UserCompanionId = dialogDto.CompanionUserId,
+                UserOwnerId = dialogDto.OwnerUserId
             };
         }
     }

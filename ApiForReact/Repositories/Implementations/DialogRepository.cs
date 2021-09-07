@@ -19,66 +19,52 @@ namespace ApiForReact.Repositories.Implementations
         public async Task<DialogsResult> GetUserDialogs(Guid userId, int page, int count)
         {
             var dialogs = await _appDbContext.Dialogs.AsNoTracking()
-                                                     .Where(dialog => dialog.UserOwner.Id == userId || dialog.UserCompanion.Id == userId)
+                                                     .Where(dialog => dialog.OwnerUserId == userId || dialog.CompanionUserId == userId)
                                                      .Join(_appDbContext.Users,
-                                                            dialog => dialog.UserCompanion.Id == userId ? dialog.UserOwner.Id : dialog.UserCompanion.Id,
+                                                            dialog => dialog.CompanionUserId == userId ? dialog.OwnerUserId : dialog.CompanionUserId,
                                                             user => user.Id,
                                                             (dialog, user) => new Dialog
                                                             {
                                                                 Id = dialog.Id,
                                                                 Name = user.Name,
-                                                                UserCompanionId = dialog.UserCompanion.Id,
-                                                                UserOwnerId = dialog.UserOwner.Id
+                                                                UserCompanionId = dialog.CompanionUserId,
+                                                                UserOwnerId = dialog.OwnerUserId
                                                             })
                                                      .Skip((page - 1) * count)
                                                      .Take(count)
                                                      .ToListAsync();
 
-
-            //var dialogs1 = await _appDbContext.Dialogs.AsNoTracking()
-            //                                         .SelectMany(dialogs => _appDbContext.Users.Where(user => user.Id == dialogs.UserCompanion.Id ||
-            //                                                                                                  user.Id == dialogs.UserOwner.Id)
-            //                                                                                   .Select(item => new
-            //                                                                                   {
-            //                                                                                       Id = dialogs.Id,
-            //                                                                                   }))
-            //                                         .Skip((page - 1) * count)
-            //                                         .Take(count)
-            //                                         .ToListAsync();
-
             var totalCount = await _appDbContext.Dialogs.AsNoTracking()
-                                                        .Where(dialog => dialog.UserOwner.Id == userId || dialog.UserCompanion.Id == userId)
+                                                        .Where(dialog => dialog.OwnerUserId == userId || dialog.CompanionUserId == userId)
                                                         .CountAsync();
-
-
-
             return new DialogsResult
             {
                 Items = dialogs,
                 TotalCount = totalCount
             };
         }
-        public async Task<int> StartDialog(Guid userOwnerId, Guid userCompanionId)
+        public async Task<Guid> StartDialog(Guid userOwnerId, Guid userCompanionId)
         {
             var dialog = await _appDbContext.Dialogs.AsNoTracking()
-                                                    .FirstOrDefaultAsync(dialog => dialog.UserOwner.Id == userOwnerId && dialog.UserCompanion.Id == userCompanionId);
-            var userOwner = await _appDbContext.Users.FirstOrDefaultAsync(user => user.Id == userOwnerId);
-            var userCompanion = await _appDbContext.Users.FirstOrDefaultAsync(user => user.Id == userCompanionId);
+                                                    .Select(dialog => new {id = dialog.Id, 
+                                                                           userOwnerId = dialog.OwnerUserId,
+                                                                           userCompanionId = dialog.CompanionUserId})
+                                                    .FirstOrDefaultAsync(dialog => (dialog.userOwnerId == userOwnerId && dialog.userCompanionId == userCompanionId)
+                                                                                   || 
+                                                                                   (dialog.userCompanionId == userOwnerId && dialog.userOwnerId == userCompanionId));
 
             if (dialog != null)
-                return 0;
+                return dialog.id;
 
-            if (userOwner == null || userCompanion == null)
-                return 1;
-
+            Guid id = Guid.NewGuid();
             await _appDbContext.Dialogs.AddAsync(new Data.Dto.Dialog
             {
-                Id = Guid.NewGuid(),
-                UserCompanion = userCompanion,
-                UserOwner = userOwner
+                Id = id,
+                CompanionUserId = userCompanionId,
+                OwnerUserId = userOwnerId
             });
             await _appDbContext.SaveChangesAsync();
-            return 0;
+            return id;
         } 
     }
 }

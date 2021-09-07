@@ -3,10 +3,23 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ApiForReact.Migrations
 {
-    public partial class init2 : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Dialogs",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    OwnerUserId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    CompanionUserId = table.Column<Guid>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Dialogs", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Locations",
                 columns: table => new
@@ -62,7 +75,9 @@ namespace ApiForReact.Migrations
                     UserContactsId = table.Column<Guid>(type: "TEXT", nullable: true),
                     Info = table.Column<string>(type: "TEXT", nullable: true),
                     IsLookingForAJob = table.Column<bool>(type: "INTEGER", nullable: false),
-                    ResumeText = table.Column<string>(type: "TEXT", nullable: true)
+                    ResumeText = table.Column<string>(type: "TEXT", nullable: true),
+                    Password = table.Column<string>(type: "TEXT", nullable: true),
+                    Email = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -82,28 +97,38 @@ namespace ApiForReact.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Dialogs",
+                name: "Messages",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    UserOwnerId = table.Column<Guid>(type: "TEXT", nullable: true),
-                    UserCompanionId = table.Column<Guid>(type: "TEXT", nullable: true)
+                    UserIdOwner = table.Column<Guid>(type: "TEXT", nullable: false),
+                    UserIdCompanion = table.Column<Guid>(type: "TEXT", nullable: false),
+                    DialogId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Text = table.Column<string>(type: "TEXT", nullable: true),
+                    Date = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Status = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Dialogs", x => x.Id);
+                    table.PrimaryKey("PK_Messages", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Dialogs_Users_UserCompanionId",
-                        column: x => x.UserCompanionId,
+                        name: "FK_Messages_Dialogs_DialogId",
+                        column: x => x.DialogId,
+                        principalTable: "Dialogs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Messages_Users_UserIdCompanion",
+                        column: x => x.UserIdCompanion,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Dialogs_Users_UserOwnerId",
-                        column: x => x.UserOwnerId,
+                        name: "FK_Messages_Users_UserIdOwner",
+                        column: x => x.UserIdOwner,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -126,63 +151,20 @@ namespace ApiForReact.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Messages",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    UserOwnerId = table.Column<Guid>(type: "TEXT", nullable: true),
-                    UserCompanionId = table.Column<Guid>(type: "TEXT", nullable: true),
-                    Text = table.Column<string>(type: "TEXT", nullable: true),
-                    DialogId = table.Column<Guid>(type: "TEXT", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Messages", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Messages_Dialogs_DialogId",
-                        column: x => x.DialogId,
-                        principalTable: "Dialogs",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Messages_Users_UserCompanionId",
-                        column: x => x.UserCompanionId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Messages_Users_UserOwnerId",
-                        column: x => x.UserOwnerId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Dialogs_UserCompanionId",
-                table: "Dialogs",
-                column: "UserCompanionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Dialogs_UserOwnerId",
-                table: "Dialogs",
-                column: "UserOwnerId");
-
             migrationBuilder.CreateIndex(
                 name: "IX_Messages_DialogId",
                 table: "Messages",
                 column: "DialogId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Messages_UserCompanionId",
+                name: "IX_Messages_UserIdCompanion",
                 table: "Messages",
-                column: "UserCompanionId");
+                column: "UserIdCompanion");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Messages_UserOwnerId",
+                name: "IX_Messages_UserIdOwner",
                 table: "Messages",
-                column: "UserOwnerId");
+                column: "UserIdOwner");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Posts_UserId",

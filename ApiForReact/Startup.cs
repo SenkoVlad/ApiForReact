@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.IO;
 using System.Threading.Tasks;
@@ -66,9 +65,11 @@ namespace ApiForReact
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IDialogRepository, DialogRepository>();
+            services.AddScoped<IMessageRepository, MessageRepository>();
 
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IDialogService, DialogService>();
+            services.AddScoped<IMessageService, MessageService>();
 
             services.AddHttpContextAccessor();
 

@@ -8,7 +8,7 @@ namespace ApiForReact.Repositories.Intarfaces
     public interface IDialogRepository
     {
         public Task<DialogsResult> GetUserDialogs(Guid userId, int page, int count);
-        public Task<int> StartDialog(Guid userOwnerId, Guid userCompanionId);
+        public Task<Guid> StartDialog(Guid userOwnerId, Guid userCompanionId);
 
     }
 }

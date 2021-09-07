@@ -21,6 +21,7 @@ namespace ApiForReact.Data
         {
             modelBuilder.Entity<UserUser>().HasIndex(u => new { u.SubscriberUserId, u.SubscriptionUserId })
                                            .IsUnique(true);
+
         }
     }
 }
