@@ -19,3 +19,4 @@ namespace ApiForReact.Data.Dto
         public ICollection<Message> Messages { get; set; }
     }
 }
+//test
